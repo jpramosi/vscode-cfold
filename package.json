@@ -139,9 +139,9 @@
   "postinstall": "node ./node_modules/vscode/bin/install"
  },
  "devDependencies": {
-  "@types/node": "^10.14.8",
+  "@types/node": "^10.17.14",
   "typescript": "^2.9.2",
-  "vscode": "^1.1.34"
+  "vscode": "^1.1.36"
  },
  "keywords": [
   "folding",
@@ -151,5 +151,7 @@
   "c++",
   "cpp"
  ],
- "dependencies": {}
+ "dependencies": {
+  "diff": "^4.0.2"
+ }
 }
