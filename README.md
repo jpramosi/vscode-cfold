@@ -9,9 +9,7 @@ Cfold is a visual studio code extension that provides advanced folding capabilit
 
 ## Motivation
 
-I have created this extension for myself because there wasn't anything to control folding on a good way.<br>
-Other extensions allowed only specific regex or keywords, other folded namespaces and header guards,<br>
-other messed up the preprocessor directives and the list goes on.<br>
+I have created this extension for myself because there wasn't anything to control folding on a good specific way.<br>
 So, here it is. Cfold.<br>
 However i'm not an everyday type-/javascript developer, if you find something fishy in the code,<br>
 please open an issue or pullrequest.
