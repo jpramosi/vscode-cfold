@@ -1,0 +1,9 @@
+{
+	"files.exclude": {
+		"out": true
+	},
+	"search.exclude": {
+		"out": true
+    },
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+}
