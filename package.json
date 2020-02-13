@@ -2,7 +2,7 @@
  "name": "cfold",
  "displayName": "Cfold",
  "description": "Folding provider particular designed for C, C++.",
- "version": "0.1.0",
+ "version": "0.1.1",
  "publisher": "reapler",
  "homepage": "https://github.com/reapler/vscode-cfold",
  "repository": {
@@ -101,7 +101,7 @@
     "cfold.preprocessor.depth": {
      "type": "integer",
      "default": 1,
-     "description": "Sets the recurse level for providing fold controls for proprocessor directives."
+     "description": "Sets the recurse level for providing fold controls for preprocessor directives."
     },
     "cfold.preprocessor.ignoreGuard": {
      "type": "boolean",
@@ -111,7 +111,7 @@
     "cfold.preprocessor.minLines": {
      "type": "integer",
      "default": 0,
-     "description": "Minimum lines for providing fold controls for proprocessor directives."
+     "description": "Minimum lines for providing fold controls for preprocessor directives."
     },
     "cfold.language.c": {
      "type": "boolean",

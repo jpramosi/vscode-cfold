@@ -44,9 +44,9 @@ These confiugrations can be set in the common vscode settings menu:
 | cfold.provide.function            | true      | Provide fold controls for function |
 | cfold.provide.documentation       | true      | Provide fold controls for documentation block |
 | cfold.provide.comments            | true      | Provide fold controls for comment block |
-| cfold.preprocessor.depth          | 1         | Sets the recurse level for providing fold controls for proprocessor directives |
+| cfold.preprocessor.depth          | 1         | Sets the recurse level for providing fold controls for preprocessor directives |
 | cfold.preprocessor.ignoreGuard    | true      | Disable fold controls for header guards |
-| cfold.preprocessor.minLines       | 0         | Minimum lines for providing fold controls for proprocessor directives |
+| cfold.preprocessor.minLines       | 0         | Minimum lines for providing fold controls for preprocessor directives |
 | cfold.language.c                  | true      | Enable Cfold for c language |
 | cfold.language.cpp                | true      | Enable Cfold for c++ language |
 
