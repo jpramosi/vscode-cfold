@@ -48,7 +48,7 @@ function setup(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand("cfold.foldDocComments", provider.foldDocComments, provider));
     context.subscriptions.push(vscode.commands.registerCommand("cfold.foldAroundCursor", provider.foldAroundCursor, provider));
     context.subscriptions.push(vscode.commands.registerCommand("cfold.foldFunction", provider.foldFunction, provider));
-    context.subscriptions.push(vscode.commands.registerCommand("cfold.foldFunctionClassStruct", provider.foldFunctionClassStruct, provider));
+    context.subscriptions.push(vscode.commands.registerCommand("cfold.foldFunctionClassStructEnum", provider.foldFunctionClassStructEnum, provider));
 
 
     // Listen to config changes

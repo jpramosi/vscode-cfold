@@ -13,6 +13,7 @@ enum EntityType {
     Documentation,
     DocumentationQuoteBlock,
     DocumentationSlashBlock,
+    Enum,
     Function,
     Namespace,
     Preprocessor,
@@ -68,6 +69,8 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
 
     //private documentationSlashEnable = true;
 
+    private enumEnable = false;
+
     private functionEnable = true;
 
     private namespaceEnable = false;
@@ -86,7 +89,8 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
     private rangesSearchTerm_ = new Array<StringEntityType>(
         new StringEntityType('namespace', EntityType.Namespace),
         new StringEntityType('class', EntityType.Class),
-        new StringEntityType('struct', EntityType.Struct));
+        new StringEntityType('struct', EntityType.Struct),
+        new StringEntityType('enum', EntityType.Enum));
 
     /** This range contains preprocessor directives. */
     private preprocRanges_ = new Array<Range>(this.maxElements_);
@@ -100,7 +104,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
     private funcRanges_ = new Array<Range>(this.maxElements_);
     private nfuncRanges_ = 0;
 
-    /** This range contains namespaces, classes & structs */
+    /** This range contains namespaces, classes, structs, enums */
     private ranges_ = new Array<Range>(this.maxElements_);
     private nranges_ = 0;
 
@@ -156,6 +160,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             //this.commentSlashEnable = globalConfig.get('commentSlash.enable', true);
             this.documentationQuoteEnable = globalConfig.get('documentationQuote.enable', true);
             //this.documentationSlashEnable = globalConfig.get('documentationSlash.enable', true);
+            this.enumEnable = globalConfig.get('enum.enable', false);
             this.functionEnable = globalConfig.get('function.enable', true);
             this.namespaceEnable = globalConfig.get('namespace.enable', false);
             this.preprocessorEnable = globalConfig.get('preprocessor.enable', false);
@@ -172,6 +177,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             //this.commentSlashEnable = true;
             this.documentationQuoteEnable = true;
             //this.documentationSlashEnable = true;
+            this.enumEnable = true;
             this.functionEnable = true;
             this.namespaceEnable = true;
             this.preprocessorEnable = true;
@@ -681,7 +687,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
 
 
             ////////////////////////////////////////////////
-            /// Handle namespaces, structs, classes
+            /// Handle namespaces, structs, classes, enums
             ////////////////////////////////////////////////
 
             {
@@ -736,7 +742,8 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         for (let i = 0; i < this.nranges_; i++) {
             if ((this.namespaceEnable && this.ranges_[i].type === EntityType.Namespace)
                 || (this.classEnable && this.ranges_[i].type === EntityType.Class)
-                || (this.structEnable && this.ranges_[i].type === EntityType.Struct))
+                || (this.structEnable && this.ranges_[i].type === EntityType.Struct)
+                || (this.enumEnable && this.ranges_[i].type === EntityType.Enum))
                 foldingRanges.push(
                     new FoldingRange(this.ranges_[i].startLine, this.ranges_[i].endLine));
         }
@@ -803,7 +810,8 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         for (let i = 0; i < this.nranges_; i++) {
             if ((this.namespaceEnable && this.ranges_[i].type === EntityType.Namespace)
                 || (this.classEnable && this.ranges_[i].type === EntityType.Class)
-                || (this.structEnable && this.ranges_[i].type === EntityType.Struct))
+                || (this.structEnable && this.ranges_[i].type === EntityType.Struct)
+                || (this.enumEnable && this.ranges_[i].type === EntityType.Enum))
                 if (!(cursorPos.line >= this.ranges_[i].startLine && cursorPos.line <= this.ranges_[i].endLine)) {
                     //log('foldAroundCursor->ranges_: [L' + this.ranges_[i].startLine + "] [TYPE:"
                     //    + EntityType[this.ranges_[i].type] + "]");
@@ -845,7 +853,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             await vscode.commands.executeCommand("editor.fold", { levels: 1, direction: 'up', selectionLines: lines });
     }
 
-    public async foldFunctionClassStruct() {
+    public async foldFunctionClassStructEnum() {
         if (vscode.window.activeTextEditor === undefined
             || !vscode.window.activeTextEditor.selection.isEmpty)
             return;
@@ -857,7 +865,8 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         for (let i = 0; i < this.nranges_; i++) {
             if ((this.namespaceEnable && this.ranges_[i].type === EntityType.Namespace)
                 || (this.classEnable && this.ranges_[i].type === EntityType.Class)
-                || (this.structEnable && this.ranges_[i].type === EntityType.Struct))
+                || (this.structEnable && this.ranges_[i].type === EntityType.Struct)
+                || (this.enumEnable && this.ranges_[i].type === EntityType.Enum))
                 lines.push(this.ranges_[i].startLine);
         }
 
