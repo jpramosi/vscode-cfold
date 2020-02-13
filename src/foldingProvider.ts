@@ -318,6 +318,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                             let pop = preprocStack.pop() || new CharInfo(0, 0);
                             if (this.npreprocRanges_ < this.maxElements_ && pop.flag !== 1) {
                                 let mod = 0;
+                                // Shift end to avoid slipping into the scope of #if
                                 if (preprocElif || preprocElse)
                                     mod = 1;
                                 const idx = this.npreprocRanges_;
@@ -327,7 +328,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                                 this.preprocRanges_[idx].endCol = 0;
                                 this.preprocRanges_[idx].scope = preprocStack.length;
                                 this.preprocRanges_[idx].dist =
-                                    this.preprocRanges_[idx].endLine - this.preprocRanges_[idx].startLine;
+                                    (this.preprocRanges_[idx].endLine + mod) - this.preprocRanges_[idx].startLine;
                                 this.preprocRanges_[idx].type = EntityType.Preprocessor;
                                 log('preproc block add: [L' + pop.line +
                                     '->L' + (i - mod) + '] ' + line);
