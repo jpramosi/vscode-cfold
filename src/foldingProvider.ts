@@ -20,6 +20,7 @@ enum EntityType {
     String,
     StringBlock,
     Struct,
+    WithinFunction,
     Other,
 }
 
@@ -82,10 +83,10 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
 
     private structEnable = false;
 
-    //private withinFunctionEnable = false;
-    //private withinFunctionMinLines = 0;
+    private withinFunctionEnable = false;
+    private withinFunctionMinLines = 0;
 
-    private maxElements_ = 800;
+    private maxElements_ = 500;
     private rangesSearchTerm_ = new Array<StringEntityType>(
         new StringEntityType('namespace', EntityType.Namespace),
         new StringEntityType('class', EntityType.Class),
@@ -104,6 +105,10 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
     private funcRanges_ = new Array<Range>(this.maxElements_);
     private nfuncRanges_ = 0;
 
+    /** This range contains only ranges within functions. */
+    private withinFuncRanges_ = new Array<Range>(this.maxElements_);
+    private nwithinFuncRanges_ = 0;
+
     /** This range contains namespaces, classes, structs, enums */
     private ranges_ = new Array<Range>(this.maxElements_);
     private nranges_ = 0;
@@ -115,6 +120,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             this.stringRanges_[i] = new Range();
             this.ranges_[i] = new Range();
             this.funcRanges_[i] = new Range();
+            this.withinFuncRanges_[i] = new Range();
         }
     }
 
@@ -168,8 +174,8 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             this.preprocessorMinLines = globalConfig.get('preprocessor.minLines', 0);
             this.preprocessorRecursiveDepth = globalConfig.get('preprocessor.recursiveDepth', 1);
             this.structEnable = globalConfig.get('struct.enable', false);
-            //this.withinFunctionEnable = globalConfig.get('withinFunction.enable', false);
-            //this.withinFunctionMinLines = globalConfig.get('withinFunction.minLines', 0);
+            this.withinFunctionEnable = globalConfig.get('withinFunction.enable', false);
+            this.withinFunctionMinLines = globalConfig.get('withinFunction.minLines', 0);
         }
         else {
             this.classEnable = true;
@@ -185,8 +191,8 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             this.preprocessorMinLines = 0;
             this.preprocessorRecursiveDepth = 1;
             this.structEnable = true;
-            //this.withinFunctionEnable = true;
-            //this.withinFunctionMinLines = 0;
+            this.withinFunctionEnable = true;
+            this.withinFunctionMinLines = 0;
         }
 
         // Validate config
@@ -194,8 +200,8 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             this.preprocessorMinLines = 0;
         if (this.preprocessorRecursiveDepth < 0)
             this.preprocessorRecursiveDepth = 0;
-        //if (this.withinFunctionMinLines < 0)
-        //    this.withinFunctionMinLines = 0;
+        if (this.withinFunctionMinLines < 0)
+            this.withinFunctionMinLines = 0;
     }
 
     private reset() {
@@ -226,6 +232,15 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             this.funcRanges_[i].dist = 0;
             this.funcRanges_[i].type = EntityType.Unknown;
         }
+        for (let i = 0; i < this.withinFuncRanges_.length; i++) {
+            this.withinFuncRanges_[i].startLine = 0;
+            this.withinFuncRanges_[i].startCol = 0;
+            this.withinFuncRanges_[i].endLine = 0;
+            this.withinFuncRanges_[i].endCol = 0;
+            this.withinFuncRanges_[i].scope = 0;
+            this.withinFuncRanges_[i].dist = 0;
+            this.withinFuncRanges_[i].type = EntityType.Unknown;
+        }
         for (let i = 0; i < this.ranges_.length; i++) {
             this.ranges_[i].startLine = 0;
             this.ranges_[i].startCol = 0;
@@ -238,6 +253,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         this.npreprocRanges_ = 0;
         this.nstringRanges_ = 0;
         this.nfuncRanges_ = 0;
+        this.nwithinFuncRanges_ = 0;
         this.nranges_ = 0;
     }
 
@@ -301,17 +317,20 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                         if (preprocStack.length > 0) {
                             let pop = preprocStack.pop() || new CharInfo(0, 0);
                             if (this.npreprocRanges_ < this.maxElements_ && pop.flag !== 1) {
+                                let mod = 0;
+                                if (preprocElif || preprocElse)
+                                    mod = 1;
                                 const idx = this.npreprocRanges_;
                                 this.preprocRanges_[idx].startLine = pop.line;
                                 this.preprocRanges_[idx].startCol = pop.column;
-                                this.preprocRanges_[idx].endLine = i;
+                                this.preprocRanges_[idx].endLine = i - mod;
                                 this.preprocRanges_[idx].endCol = 0;
                                 this.preprocRanges_[idx].scope = preprocStack.length;
                                 this.preprocRanges_[idx].dist =
                                     this.preprocRanges_[idx].endLine - this.preprocRanges_[idx].startLine;
                                 this.preprocRanges_[idx].type = EntityType.Preprocessor;
                                 log('preproc block add: [L' + pop.line +
-                                    '->L' + i + '] ' + line);
+                                    '->L' + (i - mod) + '] ' + line);
                                 this.npreprocRanges_++;
                             }
                         }
@@ -534,6 +553,12 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                     }
                 }
 
+                /* // Handle brackets within function
+                if (funcBracketSet && this.withinFunctionEnable)
+                {
+
+                } */
+
                 // Pop close bracket
                 let cbracket = this.getIndicesOf('}', line);
                 if (cbracket.length > 0) {
@@ -547,24 +572,49 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                                 || (funcIsCtor
                                     && funcStack.length === 0
                                     && this.isEmptyOrWhitespace(line))) {
-                                log('func add [' + pop.line + '-' + i + ']')
-                                // Add range
-                                const idx = this.nfuncRanges_;
-                                this.funcRanges_[idx].startLine = pop.line;
-                                this.funcRanges_[idx].startCol = pop.column;
-                                this.funcRanges_[idx].endLine = i;
-                                this.funcRanges_[idx].endCol = cbracket[j];
-                                this.funcRanges_[idx].scope = 0;
-                                this.funcRanges_[idx].dist =
-                                    this.funcRanges_[idx].endLine - this.funcRanges_[idx].startLine;
-                                this.funcRanges_[idx].type = EntityType.Function;
-                                this.nfuncRanges_++;
+                                if (this.nfuncRanges_ < this.maxElements_) {
+                                    log('func add [' + pop.line + '-' + i + ']')
+                                    // Add range
+                                    const idx = this.nfuncRanges_;
+                                    this.funcRanges_[idx].startLine = pop.line;
+                                    this.funcRanges_[idx].startCol = pop.column;
+                                    this.funcRanges_[idx].endLine = i;
+                                    this.funcRanges_[idx].endCol = cbracket[j];
+                                    this.funcRanges_[idx].scope = 0;
+                                    this.funcRanges_[idx].dist =
+                                        this.funcRanges_[idx].endLine - this.funcRanges_[idx].startLine;
+                                    this.funcRanges_[idx].type = EntityType.Function;
+                                    this.nfuncRanges_++;
+                                }
                                 // Reset
                                 funcCandidate.line = -1;
                                 funcCandidate.column = -1;
                                 funcBracketSet = false;
                                 funcIsCtor = false;
                                 funcStack = new Array<CharInfo>();
+                            }
+                            // Handle brackets within function
+                            else if (this.withinFunctionEnable
+                                && this.nwithinFuncRanges_ < this.maxElements_
+                                && cbracket[j] !== -1
+                                && cbracket[j] >= funcCandidate.column
+                                && pop.column >= funcCandidate.column
+                                && pop.line !== i
+                                && i - pop.line >= this.withinFunctionMinLines
+                                && !this.inStringBlock(pop.line, pop.column, pop.column + 1)
+                                && !this.inStringBlock(i, cbracket[j], cbracket[j] + 1)) {
+                                log('within func add [' + pop.line + '-' + i + ']');
+                                // Add range
+                                const idx = this.nwithinFuncRanges_;
+                                this.withinFuncRanges_[idx].startLine = pop.line;
+                                this.withinFuncRanges_[idx].startCol = pop.column;
+                                this.withinFuncRanges_[idx].endLine = i;
+                                this.withinFuncRanges_[idx].endCol = cbracket[j];
+                                this.withinFuncRanges_[idx].scope = 0;
+                                this.withinFuncRanges_[idx].dist =
+                                    this.withinFuncRanges_[idx].endLine - this.withinFuncRanges_[idx].startLine;
+                                this.withinFuncRanges_[idx].type = EntityType.WithinFunction;
+                                this.nwithinFuncRanges_++;
                             }
                         }
                     }
@@ -757,6 +807,10 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             foldingRanges.push(
                 new FoldingRange(this.funcRanges_[i].startLine, this.funcRanges_[i].endLine));
         }
+        for (let i = 0; i < this.nwithinFuncRanges_; i++) {
+            foldingRanges.push(
+                new FoldingRange(this.withinFuncRanges_[i].startLine, this.withinFuncRanges_[i].endLine));
+        }
 
 
 
@@ -834,6 +888,13 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                 lines.push(this.funcRanges_[i].startLine);
             }
         }
+        for (let i = 0; i < this.nwithinFuncRanges_; i++) {
+            if (!(cursorPos.line >= this.withinFuncRanges_[i].startLine && cursorPos.line <= this.withinFuncRanges_[i].endLine)) {
+                //log('foldAroundCursor->withinFuncRanges_: [L' + this.withinFuncRanges_[i].startLine + "] [TYPE:"
+                //    + EntityType[this.withinFuncRanges_[i].type] + "]");
+                lines.push(this.withinFuncRanges_[i].startLine);
+            }
+        }
 
         if (lines.length > 1)
             await vscode.commands.executeCommand("editor.fold", { levels: 1, direction: 'up', selectionLines: lines });
@@ -848,6 +909,9 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         for (let i = 0; i < this.nfuncRanges_; i++) {
             lines.push(this.funcRanges_[i].startLine);
         }
+        for (let i = 0; i < this.nwithinFuncRanges_; i++) {
+            lines.push(this.withinFuncRanges_[i].startLine);
+        }
 
         if (lines.length > 1)
             await vscode.commands.executeCommand("editor.fold", { levels: 1, direction: 'up', selectionLines: lines });
@@ -861,6 +925,9 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
 
         for (let i = 0; i < this.nfuncRanges_; i++) {
             lines.push(this.funcRanges_[i].startLine);
+        }
+        for (let i = 0; i < this.nwithinFuncRanges_; i++) {
+            lines.push(this.withinFuncRanges_[i].startLine);
         }
         for (let i = 0; i < this.nranges_; i++) {
             if ((this.namespaceEnable && this.ranges_[i].type === EntityType.Namespace)

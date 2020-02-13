@@ -1,9 +1,11 @@
 import * as vscode from 'vscode'
+const pkg = require('../package.json')
 
 import FoldingProvider from './foldingProvider'
 import { g_logChannel, log, toggleLog } from './logger';
 import { globalConfig, updateConfig } from './globalConfig';
 
+const VERSION_ID = 'cfoldVersion'
 let $disposable: vscode.Disposable | null = null;
 
 function setup(context: vscode.ExtensionContext) {
@@ -63,9 +65,43 @@ function setup(context: vscode.ExtensionContext) {
 	$disposable = vscode.Disposable.from(...subscriptions);
 }
 
-export async function activate(context: vscode.ExtensionContext) {
-	setup(context);
+async function showWhatsNewMessage(version: string) {
+    const actions: vscode.MessageItem[] = [{
+        title: 'Homepage'
+    }, {
+        title: 'Release Notes'
+    }];
 
+    const result = await vscode.window.showInformationMessage(
+        `Cfold has been updated to ${version}.`,
+        ...actions
+    );
+
+    if (result != null) {
+        if (result === actions[0]) {
+            await vscode.commands.executeCommand(
+                'vscode.open',
+                vscode.Uri.parse(`${pkg.homepage}`)
+            );
+        }
+        else if (result === actions[1]) {
+            await vscode.commands.executeCommand(
+                'vscode.open',
+                vscode.Uri.parse(`${pkg.homepage}/blob/master/CHANGELOG.md`)
+            );
+        }
+    }
+}
+
+export async function activate(context: vscode.ExtensionContext) {
+    const previousVersion = context.globalState.get<string>(VERSION_ID);
+    const currentVersion = pkg.version;
+    if (previousVersion === undefined || currentVersion !== previousVersion) {
+        await showWhatsNewMessage(currentVersion);
+        context.globalState.update(VERSION_ID, currentVersion);
+    }
+
+	setup(context);
 	vscode.workspace.onDidChangeConfiguration(event => {
 		if(event.affectsConfiguration('folding')) {
 			setup(context);

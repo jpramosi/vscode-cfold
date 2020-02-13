@@ -46,8 +46,8 @@ struct chunk_crlf
 
     /// Required for @b ConstBufferSequence
 #if BOOST_BEAST_DOXYGEN @_5_
-    using value_type = __implementation_defined__;
-#else @_5_ @_6_
+    using value_type = __implementation_defined__; @_5_
+#else @_6_
     using value_type = net::const_buffer;
 #endif @_6_
 
@@ -230,15 +230,15 @@ public:
 
     /// Required for @b ConstBufferSequence
 #if BOOST_BEAST_DOXYGEN @_17_
-    using value_type = __implementation_defined__;
-#else @_17_ @_18_
+    using value_type = __implementation_defined__; @_17_
+#else @_18_
     using value_type = typename view_type::value_type;
 #endif @_18_
 
     /// Required for @b ConstBufferSequence
 #if BOOST_BEAST_DOXYGEN @_19_
-    using const_iterator = __implementation_defined__;
-#else @_19_ @_20_
+    using const_iterator = __implementation_defined__; @_19_
+#else @_20_
     using const_iterator = typename view_type::const_iterator;
 #endif @_20_
 
@@ -424,15 +424,15 @@ public:
 
     /// Required for @b ConstBufferSequence
 #if BOOST_BEAST_DOXYGEN @_31_
-    using value_type = __implementation_defined__;
-#else @_31_ @_32_
+    using value_type = __implementation_defined__; @_31_
+#else @_32_
     using value_type = typename view_type::value_type;
 #endif @_32_
 
     /// Required for @b ConstBufferSequence
 #if BOOST_BEAST_DOXYGEN @_33_
-    using const_iterator = __implementation_defined__;
-#else @_33_ @_34_
+    using const_iterator = __implementation_defined__; @_33_
+#else @_34_
     using const_iterator = typename view_type::const_iterator;
 #endif @_34_
 
@@ -513,8 +513,8 @@ public:
     */ @_41_
 #if BOOST_BEAST_DOXYGEN @_42_
     template<class Allocator>
-    chunk_last(Trailer const& trailer, Allocator const& allocator);
-#else @_42_ @_43_
+    chunk_last(Trailer const& trailer, Allocator const& allocator); @_42_
+#else @_43_
     template<class DeducedTrailer, class Allocator,
         class = typename std::enable_if<
             is_fields<DeducedTrailer>::value>::type>
@@ -529,16 +529,16 @@ public:
 
     /// Required for @b ConstBufferSequence
 #if BOOST_BEAST_DOXYGEN @_44_
-    using value_type = __implementation_defined__;
-#else @_44_ @_45_
+    using value_type = __implementation_defined__; @_44_
+#else @_45_
     using value_type =
         typename view_type::value_type;
 #endif @_45_
 
     /// Required for @b ConstBufferSequence
 #if BOOST_BEAST_DOXYGEN @_46_
-    using const_iterator = __implementation_defined__;
-#else @_46_ @_47_
+    using const_iterator = __implementation_defined__; @_46_
+#else @_47_
     using const_iterator =
         typename view_type::const_iterator;
 #endif @_47_
@@ -724,8 +724,8 @@ make_chunk_last(
     Trailer const& trailer,
     Args&&... args)
 { @_66_
-    return chunk_last<Trailer>{
-        trailer, std::forward<Args>(args)...};
+    return chunk_last<Trailer>{ @_67_
+        trailer, std::forward<Args>(args)...}; @_67_
 } @_66_
 
 } // http @_2_

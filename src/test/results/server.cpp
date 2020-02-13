@@ -38,15 +38,15 @@ void server::run_async_workers(const std::function<void()> &io_stopped_handler)
     if (m_io_ctx.stopped())
         m_io_ctx.restart();
     m_workers = std::vector<std::thread>();
-    {
+    { @_3_
         std::unique_lock<std::mutex> worker_lock(m_stop_mtx);
         m_workers_done = 0;
-    }
+    } @_3_
     auto workers =
         m_async_start ? m_server_cfg.workers : m_server_cfg.workers - 1;
     for (auto i = workers; i > 0; --i)
-    {
-        m_workers.emplace_back([this, i, workers, io_stopped_handler] {
+    { @_4_
+        m_workers.emplace_back([this, i, workers, io_stopped_handler] { @_5_
             RADRPC_LOG("server::run_async_workers: Worker " << i << " started");
 
             // Do not catch exceptions. Let it handle by the OS or user:
@@ -59,52 +59,52 @@ void server::run_async_workers(const std::function<void()> &io_stopped_handler)
             RADRPC_LOG("server::run_async_workers: Worker " << i << " done");
 
             bool notify = false;
-            {
+            { @_6_
                 std::unique_lock<std::mutex> worker_lock(m_stop_mtx);
                 notify = ++m_workers_done == workers;
-            }
+            } @_6_
             if (notify)
-            {
+            { @_7_
                 RADRPC_LOG("server::run_async_workers: IO has been stopped "
                            "on workers");
                 m_cv_stop.notify_all();
                 if (io_stopped_handler)
                     io_stopped_handler();
-            }
-        });
-    }
+            } @_7_
+        }); @_5_
+    } @_4_
 } @_2_
 
 void server::send_session_object(
     const session_object &obj,
     const std::shared_ptr<core::data::push> &push_ptr)
-{ @_3_
-#ifdef RADRPC_SSL_SUPPORT @_4_
+{ @_8_
+#ifdef RADRPC_SSL_SUPPORT @_9_
     if (obj.m_is_ssl)
-    {
+    { @_10_
         if (auto session = obj.m_ssl.lock())
             session->send(push_ptr);
-    }
+    } @_10_
     else
-#endif @_4_
-    {
+#endif @_9_
+    { @_11_
         if (auto session = obj.m_plain.lock())
             session->send(push_ptr);
-    }
-} @_3_
+    } @_11_
+} @_8_
 
 void server::on_signal(const boost::system::error_code &ec, int signal_code)
-{ @_5_
+{ @_12_
     RADRPC_LOG("server::on_signal: " << signal_code);
     m_io_ctx.stop();
-} @_5_
+} @_12_
 
 server::server(const server_config &p_server_cfg,
                const server_timeout &p_server_timeout,
                const session_config &p_session_cfg) :
-#ifdef RADRPC_SSL_SUPPORT @_6_
+#ifdef RADRPC_SSL_SUPPORT @_13_
     m_ssl_ctx(ssl::context::sslv23),
-#endif @_6_
+#endif @_13_
     m_running(false),
     m_async_start(false),
     m_workers_done(0),
@@ -116,26 +116,26 @@ server::server(const server_config &p_server_cfg,
     m_io_ctx(static_cast<int>(p_server_cfg.workers)),
     m_listener(std::make_shared<impl::server::listener>(
         m_io_ctx,
-#ifdef RADRPC_SSL_SUPPORT @_7_
+#ifdef RADRPC_SSL_SUPPORT @_14_
         nullptr,
-#endif @_7_
-        tcp::endpoint{boost::asio::ip::make_address(p_server_cfg.host_address),
-                      p_server_cfg.port},
+#endif @_14_
+        tcp::endpoint{boost::asio::ip::make_address(p_server_cfg.host_address), @_15_
+                      p_server_cfg.port}, @_15_
         m_manager,
         m_server_cfg,
         m_server_timeout,
         m_session_cfg)),
     m_signals(m_io_ctx, SIGINT, SIGTERM)
-{ @_8_
+{ @_16_
     RADRPC_LOG("+server");
     m_listener->run();
     m_signals.async_wait(std::bind(&server::on_signal,
                                    this,
                                    std::placeholders::_1,
                                    std::placeholders::_2));
-} @_8_
+} @_16_
 
-#ifdef RADRPC_SSL_SUPPORT @_9_
+#ifdef RADRPC_SSL_SUPPORT @_17_
 
 server::server(const server_config &p_server_cfg,
                const server_timeout &p_server_timeout,
@@ -154,33 +154,33 @@ server::server(const server_config &p_server_cfg,
     m_listener(std::make_shared<impl::server::listener>(
         m_io_ctx,
         &m_ssl_ctx,
-        tcp::endpoint{boost::asio::ip::make_address(p_server_cfg.host_address),
-                      p_server_cfg.port},
+        tcp::endpoint{boost::asio::ip::make_address(p_server_cfg.host_address), @_18_
+                      p_server_cfg.port}, @_18_
         m_manager,
         m_server_cfg,
         m_server_timeout,
         m_session_cfg)),
     m_signals(m_io_ctx, SIGINT, SIGTERM)
-{ @_10_
+{ @_19_
     RADRPC_LOG("+server");
     m_listener->run();
     m_signals.async_wait(std::bind(&server::on_signal,
                                    this,
                                    std::placeholders::_1,
                                    std::placeholders::_2));
-} @_10_
+} @_19_
 
-#endif @_9_
+#endif @_17_
 
 server::~server()
-{ @_11_
+{ @_20_
     RADRPC_LOG("~server");
     stop();
-} @_11_
+} @_20_
 
 void server::start()
-{ @_12_
-    {
+{ @_21_
+    { @_22_
         std::unique_lock<std::mutex> lock(m_mtx);
         if (m_running)
             return;
@@ -188,17 +188,17 @@ void server::start()
         m_running = true;
         m_async_start = false;
         run_async_workers();
-    }
+    } @_22_
 
     RADRPC_LOG("server::start: Run blocking IO context");
     m_io_ctx.run();
 
     // SIGINT, SIGTERM, m_io_ctx.stop()
     RADRPC_LOG("server::start: Blocking IO context has been stopped");
-} @_12_
+} @_21_
 
 void server::async_start(const std::function<void()> &io_stopped_handler)
-{ @_13_
+{ @_23_
     std::unique_lock<std::mutex> lock(m_mtx);
     if (m_running)
         return;
@@ -206,17 +206,17 @@ void server::async_start(const std::function<void()> &io_stopped_handler)
     m_running = true;
     m_async_start = true;
     run_async_workers(io_stopped_handler);
-} @_13_
+} @_23_
 
 void server::stop()
-{ @_14_
+{ @_24_
     if (m_io_ctx.get_executor().running_in_this_thread())
-    {
+    { @_25_
         RADRPC_LOG("server::stop: Called from IO worker");
         std::thread([&] { m_io_ctx.stop(); }).join();
-    }
+    } @_25_
     else
-    {
+    { @_26_
         RADRPC_LOG("server::stop");
         m_io_ctx.stop();
         std::unique_lock<std::mutex> lock(m_mtx);
@@ -228,20 +228,20 @@ void server::stop()
         m_cv_stop.wait(worker_lock, [&] { return workers == m_workers_done; });
         RADRPC_LOG("server::stop: Workers done");
         for (auto &worker : m_workers)
-        {
+        { @_27_
             if (worker.joinable())
                 worker.join();
-        }
+        } @_27_
         RADRPC_LOG("server::stop: Workers joined");
         m_running = false;
-    }
-} @_14_
+    } @_26_
+} @_24_
 
 long server::connections() { return m_manager->connections(); }
 
 bool server::bind(uint32_t bind_id,
                   std::function<void(session_context *)> handler)
-{ @_15_
+{ @_28_
     std::unique_lock<std::mutex> lock(m_mtx);
     if (m_running || m_manager->connections() != 0 ||
         bind_id >= config::max_call_id)
@@ -252,34 +252,34 @@ bool server::bind(uint32_t bind_id,
                      error::bad_operation);
     m_manager->bound_funcs[bind_id] = std::move(handler);
     return true;
-} @_15_
+} @_28_
 
 bool server::bind_listen(
     std::function<bool(const boost::asio::ip::address &)> handler)
-{ @_16_
+{ @_29_
     std::unique_lock<std::mutex> lock(m_mtx);
     if (m_running || m_manager->connections() != 0)
         return false;
     m_manager->on_listen = std::move(handler);
     return true;
-} @_16_
+} @_29_
 
 bool server::bind_accept(std::function<bool(session_info &)> handler)
-{ @_17_
+{ @_30_
     std::unique_lock<std::mutex> lock(m_mtx);
     if (m_running || m_manager->connections() != 0)
         return false;
     m_manager->on_accept = std::move(handler);
     return true;
-} @_17_
+} @_30_
 
 bool server::bind_disconnect(std::function<void(const session_info &)> handler)
-{ @_18_
+{ @_31_
     std::unique_lock<std::mutex> lock(m_mtx);
     if (m_running || m_manager->connections() != 0)
         return false;
     m_manager->on_disconnect = std::move(handler);
     return true;
-} @_18_
+} @_31_
 
 } // namespace radrpc @_1_

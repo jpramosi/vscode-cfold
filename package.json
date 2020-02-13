@@ -2,7 +2,7 @@
     "name": "cfold",
     "displayName": "Cfold",
     "description": "Folding provider particular designed for C, C++.",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "publisher": "reapler",
     "homepage": "https://github.com/reapler/vscode-cfold",
     "repository": {
@@ -76,7 +76,7 @@
                 "cfold.commentSlash.enable": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enable fold controls for comment blocks (//)."
+                    "description": "Currently not implemented."
                 },
                 "cfold.documentationQuote.enable": {
                     "type": "boolean",
@@ -86,7 +86,7 @@
                 "cfold.documentationSlash.enable": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Enable fold controls for documentation blocks (///)."
+                    "description": "Currently not implemented."
                 },
                 "cfold.enum.enable": {
                     "type": "boolean",
