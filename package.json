@@ -63,45 +63,45 @@
             "type": "object",
             "title": "cfold",
             "properties": {
-                "cfold.provide.preprocessor": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Provide fold controls for preprocessor directives."
-                },
-                "cfold.provide.namespace": {
+                "cfold.class.enable": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Provide fold controls for namespaces."
+                    "description": "Enable fold controls for classes."
                 },
-                "cfold.provide.class": {
+                "cfold.commentQuote.enable": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable fold controls for comment blocks (/* */)."
+                },
+                "cfold.commentSlash.enable": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable fold controls for comment blocks (//)."
+                },
+                "cfold.documentationQuote.enable": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable fold controls for documentation blocks (/** */)."
+                },
+                "cfold.documentationSlash.enable": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable fold controls for documentation blocks (///)."
+                },
+                "cfold.function.enable": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable fold controls for functions."
+                },
+                "cfold.namespace.enable": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Provide fold controls for classes."
+                    "description": "Enable fold controls for namespaces."
                 },
-                "cfold.provide.struct": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Provide fold controls for structs."
-                },
-                "cfold.provide.function": {
+                "cfold.preprocessor.enable": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Provide fold controls for functions."
-                },
-                "cfold.provide.documentation": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Provide fold controls for documentation blocks (/** */)."
-                },
-                "cfold.provide.comments": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Provide fold controls for comment blocks (/* */)."
-                },
-                "cfold.preprocessor.depth": {
-                    "type": "integer",
-                    "default": 1,
-                    "description": "Sets the recurse level for providing fold controls for preprocessor directives."
+                    "description": "Enable fold controls for preprocessor directives."
                 },
                 "cfold.preprocessor.ignoreGuard": {
                     "type": "boolean",
@@ -113,6 +113,27 @@
                     "default": 0,
                     "description": "Minimum lines for providing fold controls for preprocessor directives."
                 },
+                "cfold.preprocessor.recursiveDepth": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Sets the recurse level for providing fold controls for preprocessor directives."
+                },
+                "cfold.struct.enable": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable fold controls for structs."
+                },
+                "cfold.withinFunction.enable": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable fold controls within functions. ({})"
+                },
+                "cfold.withinFunction.minLines": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Minimum lines for providing fold controls within functions."
+                },
+
                 "cfold.language.c": {
                     "type": "boolean",
                     "default": true,
