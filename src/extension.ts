@@ -25,7 +25,7 @@ function setup(context: vscode.ExtensionContext) {
 
 
     // Register folding providers for each language
-    let provider = new FoldingProvider();
+    let provider = new FoldingProvider(false);
     let disposable;
     log('cfold initialize');
     subscriptions.push(disposable = g_logChannel);

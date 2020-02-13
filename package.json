@@ -1,157 +1,164 @@
 {
- "name": "cfold",
- "displayName": "Cfold",
- "description": "Folding provider particular designed for C, C++.",
- "version": "0.1.1",
- "publisher": "reapler",
- "homepage": "https://github.com/reapler/vscode-cfold",
- "repository": {
-  "type": "git",
-  "url": "https://github.com/reapler/vscode-cfold.git"
- },
- "bugs": {
-  "url": "https://github.com/reapler/vscode-cfold/issues"
- },
- "author": {
-  "name": "reapler",
-  "email": "noreply@redflask.com"
- },
- "license": "MIT",
- "engines": {
-  "vscode": "^1.32.0"
- },
- "categories": [
-  "Other"
- ],
- "activationEvents": [
-  "*"
- ],
- "contributes": {
-  "commands": [
-   {
-    "title": "Toggle log",
-    "category": "cfold",
-    "command": "cfold.toggleLog"
-   },
-   {
-    "title": "Fold all provided fold controls",
-    "category": "cfold",
-    "command": "cfold.foldAll"
-   },
-   {
-    "title": "Fold all comments & documentation blocks",
-    "category": "cfold",
-    "command": "cfold.foldDocComments"
-   },
-   {
-    "title": "Fold all controls around cursor",
-    "category": "cfold",
-    "command": "cfold.foldAroundCursor"
-   },
-   {
-    "title": "Fold all functions",
-    "category": "cfold",
-    "command": "cfold.foldFunction"
-   },
-   {
-    "title": "Fold all functions, classes & structs",
-    "category": "cfold",
-    "command": "cfold.foldFunctionClassStruct"
-   }
-  ],
-  "configuration": {
-   "type": "object",
-   "title": "cfold",
-   "properties": {
-    "cfold.provide.preprocessor": {
-     "type": "boolean",
-     "default": true,
-     "description": "Provide fold controls for preprocessor directives."
+    "name": "cfold",
+    "displayName": "Cfold",
+    "description": "Folding provider particular designed for C, C++.",
+    "version": "0.1.2",
+    "publisher": "reapler",
+    "homepage": "https://github.com/reapler/vscode-cfold",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/reapler/vscode-cfold.git"
     },
-    "cfold.provide.namespace": {
-     "type": "boolean",
-     "default": false,
-     "description": "Provide fold controls for namespaces."
+    "bugs": {
+        "url": "https://github.com/reapler/vscode-cfold/issues"
     },
-    "cfold.provide.class": {
-     "type": "boolean",
-     "default": false,
-     "description": "Provide fold controls for classes."
+    "author": {
+        "name": "reapler",
+        "email": "noreply@redflask.com"
     },
-    "cfold.provide.struct": {
-     "type": "boolean",
-     "default": false,
-     "description": "Provide fold controls for structs."
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.32.0"
     },
-    "cfold.provide.function": {
-     "type": "boolean",
-     "default": true,
-     "description": "Provide fold controls for functions."
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "contributes": {
+        "commands": [
+            {
+                "title": "Toggle log",
+                "category": "cfold",
+                "command": "cfold.toggleLog"
+            },
+            {
+                "title": "Fold all provided fold controls",
+                "category": "cfold",
+                "command": "cfold.foldAll"
+            },
+            {
+                "title": "Fold all comments & documentation blocks",
+                "category": "cfold",
+                "command": "cfold.foldDocComments"
+            },
+            {
+                "title": "Fold all controls around cursor",
+                "category": "cfold",
+                "command": "cfold.foldAroundCursor"
+            },
+            {
+                "title": "Fold all functions",
+                "category": "cfold",
+                "command": "cfold.foldFunction"
+            },
+            {
+                "title": "Fold all functions, classes & structs",
+                "category": "cfold",
+                "command": "cfold.foldFunctionClassStruct"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "cfold",
+            "properties": {
+                "cfold.provide.preprocessor": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Provide fold controls for preprocessor directives."
+                },
+                "cfold.provide.namespace": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Provide fold controls for namespaces."
+                },
+                "cfold.provide.class": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Provide fold controls for classes."
+                },
+                "cfold.provide.struct": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Provide fold controls for structs."
+                },
+                "cfold.provide.function": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Provide fold controls for functions."
+                },
+                "cfold.provide.documentation": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Provide fold controls for documentation blocks (/** */)."
+                },
+                "cfold.provide.comments": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Provide fold controls for comment blocks (/* */)."
+                },
+                "cfold.preprocessor.depth": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Sets the recurse level for providing fold controls for preprocessor directives."
+                },
+                "cfold.preprocessor.ignoreGuard": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Disable fold controls for header guards."
+                },
+                "cfold.preprocessor.minLines": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Minimum lines for providing fold controls for preprocessor directives."
+                },
+                "cfold.language.c": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable Cfold for c language."
+                },
+                "cfold.language.cpp": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable Cfold for c++ language."
+                },
+                "cfold.language.csharp": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable Cfold for c# language."
+                }
+            }
+        }
     },
-    "cfold.provide.documentation": {
-     "type": "boolean",
-     "default": true,
-     "description": "Provide fold controls for documentation blocks (/** */)."
+    "main": "./out/extension",
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "pretest": "npm run compile",
+        "test": "node ./out/test/runTest.js"
     },
-    "cfold.provide.comments": {
-     "type": "boolean",
-     "default": true,
-     "description": "Provide fold controls for comment blocks (/* */)."
+    "devDependencies": {
+        "@types/fs-extra": "^8.0.1",
+        "@types/glob": "^7.1.1",
+        "@types/mocha": "^7.0.1",
+        "@types/node": "^10.17.14",
+        "chai": "^4.2.0",
+        "fs-extra": "^8.1.0",
+        "typescript": "^2.9.2",
+        "vscode": "^1.1.36"
     },
-    "cfold.preprocessor.depth": {
-     "type": "integer",
-     "default": 1,
-     "description": "Sets the recurse level for providing fold controls for preprocessor directives."
-    },
-    "cfold.preprocessor.ignoreGuard": {
-     "type": "boolean",
-     "default": true,
-     "description": "Disable fold controls for header guards."
-    },
-    "cfold.preprocessor.minLines": {
-     "type": "integer",
-     "default": 0,
-     "description": "Minimum lines for providing fold controls for preprocessor directives."
-    },
-    "cfold.language.c": {
-     "type": "boolean",
-     "default": true,
-     "description": "Enable Cfold for c language."
-    },
-    "cfold.language.cpp": {
-     "type": "boolean",
-     "default": true,
-     "description": "Enable Cfold for c++ language."
-    },
-    "cfold.language.csharp": {
-     "type": "boolean",
-     "default": true,
-     "description": "Enable Cfold for c# language."
+    "keywords": [
+        "folding",
+        "fold",
+        "collapse",
+        "c",
+        "c++",
+        "cpp"
+    ],
+    "dependencies": {
+        "diff": "^4.0.2"
     }
-   }
-  }
- },
- "main": "./out/extension",
- "scripts": {
-  "vscode:prepublish": "npm run compile",
-  "compile": "tsc -p ./",
-  "watch": "tsc -watch -p ./",
-  "postinstall": "node ./node_modules/vscode/bin/install"
- },
- "devDependencies": {
-  "@types/node": "^10.17.14",
-  "typescript": "^2.9.2",
-  "vscode": "^1.1.36"
- },
- "keywords": [
-  "folding",
-  "fold",
-  "collapse",
-  "c",
-  "c++",
-  "cpp"
- ],
- "dependencies": {
-  "diff": "^4.0.2"
- }
 }

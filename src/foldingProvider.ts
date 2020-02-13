@@ -2,7 +2,6 @@ import * as vscode from 'vscode'
 import { FoldingRange, FoldingRangeProvider, ProviderResult, TextDocument } from 'vscode'
 import { log } from './logger';
 import { globalConfig } from './globalConfig';
-//import { Stack } from 'stack-typescript';
 const { performance } = require('perf_hooks');
 
 enum EntityType {
@@ -56,6 +55,8 @@ class Range {
 
 export default class ConfigurableFoldingProvider implements FoldingRangeProvider {
     
+    private debug_ = false;
+
     private providePrecprocessor = false;
     private provideNamespace = false;
     private provideClass = false;
@@ -89,7 +90,8 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
     private ranges_ = new Array<Range>(this.maxElements_);
     private nranges_ = 0;
 
-    constructor() {
+    constructor(debug : boolean) {
+        this.debug_ = debug;
         for (let i = 0; i < this.maxElements_; i++) {
             this.preprocRanges_[i] = new Range();
             this.stringRanges_[i] = new Range();
@@ -135,17 +137,33 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
 
     private updateConfig()
     {
-        this.providePrecprocessor = globalConfig.get('provide.preprocessor', false);
-        this.provideNamespace = globalConfig.get('provide.namespace', false);
-        this.provideClass = globalConfig.get('provide.class', false);
-        this.provideStruct = globalConfig.get('provide.struct', false);
-        this.provideFunction = globalConfig.get('provide.function', true);
-        this.provideDocumentation = globalConfig.get('provide.documentation', true);
-        this.provideComments = globalConfig.get('provide.comments', true);
+        if (!this.debug_) {
+            this.providePrecprocessor = globalConfig.get('provide.preprocessor', false);
+            this.provideNamespace = globalConfig.get('provide.namespace', false);
+            this.provideClass = globalConfig.get('provide.class', false);
+            this.provideStruct = globalConfig.get('provide.struct', false);
+            this.provideFunction = globalConfig.get('provide.function', true);
+            this.provideDocumentation = globalConfig.get('provide.documentation', true);
+            this.provideComments = globalConfig.get('provide.comments', true);
 
-        this.preprocessorDepth = globalConfig.get('preprocessor.depth', 1);
-        this.preprocessorIgnoreGuard = globalConfig.get('preprocessor.ignoreGuard', true);
-        this.preprocessorMinLines = globalConfig.get('preprocessor.minLines', 0);
+            this.preprocessorDepth = globalConfig.get('preprocessor.depth', 1);
+            this.preprocessorIgnoreGuard = globalConfig.get('preprocessor.ignoreGuard', true);
+            this.preprocessorMinLines = globalConfig.get('preprocessor.minLines', 0);
+        }
+        else
+        {
+            this.providePrecprocessor = true;
+            this.provideNamespace = true;
+            this.provideClass = true;
+            this.provideStruct = true;
+            this.provideFunction = true;
+            this.provideDocumentation = true;
+            this.provideComments = true;
+
+            this.preprocessorDepth = 1;
+            this.preprocessorIgnoreGuard = true;
+            this.preprocessorMinLines = 0;
+        }
 
         // Validate config
         if (this.preprocessorDepth < 0)
@@ -203,7 +221,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         var t0 = performance.now();
 
         const editor = vscode.window.activeTextEditor;
-        if (editor === undefined) {
+        if (editor === undefined && !this.debug_) {
             const zero: FoldingRange[] = [];
             return zero;
         }
