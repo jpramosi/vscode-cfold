@@ -1,3 +1,6 @@
+## 0.2.1
+- update packages
+
 ## 0.2.0
 - add "unit test"
 - add function ranges max elements check
