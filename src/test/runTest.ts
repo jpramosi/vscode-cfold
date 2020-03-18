@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as fse from 'fs-extra';
-//const pkg = require('../../package.json');
 import { runTests } from 'vscode-test';
 
 const out = path.join(__dirname, '..');
@@ -19,12 +18,11 @@ async function main() {
         await runTests({
             vscodeExecutablePath: undefined,
             version: 'insiders',
-            extensionPath: extensionDevelopmentPath,
-            testRunnerPath: extensionTestsPath,
-            testRunnerEnv: { C2_DEBUG: 'true' },
-            testWorkspace: testWorkspace,
-            additionalLaunchArgs: [testWorkspace, '--disable-extensions'],
-            locale: 'en-US'
+            platform: undefined,
+            extensionDevelopmentPath: extensionDevelopmentPath,
+            extensionTestsPath: extensionTestsPath,
+            extensionTestsEnv: { C2_DEBUG: 'true' },
+            launchArgs: [testWorkspace, '--disable-extensions']
         });
 
         process.exit(0);
