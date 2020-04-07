@@ -63,6 +63,16 @@
             "type": "object",
             "title": "cfold",
             "properties": {
+                "cfold.caseLabel.enable": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable fold controls for case labels within a switch. Option 'withinFunction' must be disabled."
+                },
+                "cfold.caseLabel.minLines": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Minimum lines for providing fold controls for case labels within a switch."
+                },
                 "cfold.class.enable": {
                     "type": "boolean",
                     "default": false,

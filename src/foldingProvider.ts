@@ -21,6 +21,7 @@ enum EntityType {
     StringBlock,
     Struct,
     WithinFunction,
+    Switch,
     Other,
 }
 
@@ -86,6 +87,9 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
     private withinFunctionEnable = false;
     private withinFunctionMinLines = 0;
 
+    private caseLabelEnable = false;
+    private caseLabelMinLines = 0;
+
     private maxElements_ = 500;
     private rangesSearchTerm_ = new Array<StringEntityType>(
         new StringEntityType('namespace', EntityType.Namespace),
@@ -109,6 +113,10 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
     private withinFuncRanges_ = new Array<Range>(this.maxElements_);
     private nwithinFuncRanges_ = 0;
 
+    /** This range contains casel labels within a switch. */
+    private caseLabelRanges_ = new Array<Range>(this.maxElements_);
+    private ncaseLabelRanges_ = 0;
+
     /** This range contains namespaces, classes, structs, enums */
     private ranges_ = new Array<Range>(this.maxElements_);
     private nranges_ = 0;
@@ -121,6 +129,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             this.ranges_[i] = new Range();
             this.funcRanges_[i] = new Range();
             this.withinFuncRanges_[i] = new Range();
+            this.caseLabelRanges_[i] = new Range();
         }
     }
 
@@ -160,40 +169,26 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
     }
 
     private updateConfig() {
-        if (!this.debug_) {
-            this.classEnable = globalConfig.get('class.enable', false);
-            this.commentQuoteEnable = globalConfig.get('commentQuote.enable', true);
-            //this.commentSlashEnable = globalConfig.get('commentSlash.enable', true);
-            this.documentationQuoteEnable = globalConfig.get('documentationQuote.enable', true);
-            //this.documentationSlashEnable = globalConfig.get('documentationSlash.enable', true);
-            this.enumEnable = globalConfig.get('enum.enable', false);
-            this.functionEnable = globalConfig.get('function.enable', true);
-            this.namespaceEnable = globalConfig.get('namespace.enable', false);
-            this.preprocessorEnable = globalConfig.get('preprocessor.enable', false);
-            this.preprocessorIgnoreGuard = globalConfig.get('preprocessor.ignoreGuard', true);
-            this.preprocessorMinLines = globalConfig.get('preprocessor.minLines', 0);
-            this.preprocessorRecursiveDepth = globalConfig.get('preprocessor.recursiveDepth', 1);
-            this.structEnable = globalConfig.get('struct.enable', false);
-            this.withinFunctionEnable = globalConfig.get('withinFunction.enable', false);
-            this.withinFunctionMinLines = globalConfig.get('withinFunction.minLines', 0);
-        }
-        else {
-            this.classEnable = true;
-            this.commentQuoteEnable = true;
-            //this.commentSlashEnable = true;
-            this.documentationQuoteEnable = true;
-            //this.documentationSlashEnable = true;
-            this.enumEnable = true;
-            this.functionEnable = true;
-            this.namespaceEnable = true;
-            this.preprocessorEnable = true;
-            this.preprocessorIgnoreGuard = true;
-            this.preprocessorMinLines = 0;
-            this.preprocessorRecursiveDepth = 1;
-            this.structEnable = true;
-            this.withinFunctionEnable = true;
-            this.withinFunctionMinLines = 0;
-        }
+
+        // see also setDefaultOptions()
+
+        this.classEnable = globalConfig.get('class.enable', false);
+        this.commentQuoteEnable = globalConfig.get('commentQuote.enable', true);
+        //this.commentSlashEnable = globalConfig.get('commentSlash.enable', true);
+        this.documentationQuoteEnable = globalConfig.get('documentationQuote.enable', true);
+        //this.documentationSlashEnable = globalConfig.get('documentationSlash.enable', true);
+        this.enumEnable = globalConfig.get('enum.enable', false);
+        this.functionEnable = globalConfig.get('function.enable', true);
+        this.namespaceEnable = globalConfig.get('namespace.enable', false);
+        this.preprocessorEnable = globalConfig.get('preprocessor.enable', false);
+        this.preprocessorIgnoreGuard = globalConfig.get('preprocessor.ignoreGuard', true);
+        this.preprocessorMinLines = globalConfig.get('preprocessor.minLines', 0);
+        this.preprocessorRecursiveDepth = globalConfig.get('preprocessor.recursiveDepth', 1);
+        this.structEnable = globalConfig.get('struct.enable', false);
+        this.withinFunctionEnable = globalConfig.get('withinFunction.enable', false);
+        this.withinFunctionMinLines = globalConfig.get('withinFunction.minLines', 0);
+        this.caseLabelEnable = globalConfig.get('caseLabel.enable', false);
+        this.caseLabelMinLines = globalConfig.get('caseLabel.minLines', 0);
 
         // Validate config
         if (this.preprocessorMinLines < 0)
@@ -202,6 +197,8 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             this.preprocessorRecursiveDepth = 0;
         if (this.withinFunctionMinLines < 0)
             this.withinFunctionMinLines = 0;
+        if (this.caseLabelMinLines <= 0)
+            this.caseLabelMinLines = 1;
     }
 
     private reset() {
@@ -241,6 +238,15 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             this.withinFuncRanges_[i].dist = 0;
             this.withinFuncRanges_[i].type = EntityType.Unknown;
         }
+        for (let i = 0; i < this.caseLabelRanges_.length; i++) {
+            this.caseLabelRanges_[i].startLine = 0;
+            this.caseLabelRanges_[i].startCol = 0;
+            this.caseLabelRanges_[i].endLine = 0;
+            this.caseLabelRanges_[i].endCol = 0;
+            this.caseLabelRanges_[i].scope = 0;
+            this.caseLabelRanges_[i].dist = 0;
+            this.caseLabelRanges_[i].type = EntityType.Unknown;
+        }
         for (let i = 0; i < this.ranges_.length; i++) {
             this.ranges_[i].startLine = 0;
             this.ranges_[i].startCol = 0;
@@ -254,6 +260,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         this.nstringRanges_ = 0;
         this.nfuncRanges_ = 0;
         this.nwithinFuncRanges_ = 0;
+        this.ncaseLabelRanges_ = 0;
         this.nranges_ = 0;
     }
 
@@ -274,6 +281,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         let docStack = new Array<CharInfo>();
         let rangeStack = new Array<CharInfo>();
         let funcStack = new Array<CharInfo>();
+        let caseLabelStack = new Array<CharInfo>();
 
         let startStringBlockLine = -1;
         let startStringBlockCol = -1;
@@ -281,6 +289,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         let funcCandidate = new CharInfo(-1, -1);
         let funcBracketSet = false;
         let funcIsCtor = false;
+        let funcSwitchSet = false;
 
         let bracketType = EntityType.Unknown;
 
@@ -544,21 +553,68 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                     funcIsCtor = true;
                 }
 
+                // Handle switch & case
+                if (funcStack.length > 0) {
+                    // Set switch
+                    let switch_search = ' switch ';
+                    let oswitch = line.indexOf(switch_search);
+                    if (oswitch !== -1
+                        && !this.inStringBlock(i, oswitch, oswitch + switch_search.length)) {
+                        funcSwitchSet = true;
+                    }
+                    // Push case labels
+                    else {
+                        let case_search = ' case ';
+                        let ocase = line.indexOf(case_search);
+                        if (ocase !== -1
+                            && !this.inStringBlock(i, ocase, ocase + case_search.length)) {
+
+                            if (caseLabelStack.length > 0
+                                // Check if it has the same idention
+                                && caseLabelStack[caseLabelStack.length - 1].column === ocase) {
+                                log('case pop [' + i + ']')
+
+                                //caseLabelStack.pop();
+                                let casePop = caseLabelStack.pop() || new CharInfo(0, 0);
+                                if (i - casePop.line > this.caseLabelMinLines) {
+                                    log('case add [' + casePop.line + '-' + i + '] _____' + (i - casePop.line));
+                                    // Add range
+                                    const idx = this.ncaseLabelRanges_;
+                                    this.caseLabelRanges_[idx].startLine = casePop.line;
+                                    this.caseLabelRanges_[idx].startCol = casePop.column;
+                                    this.caseLabelRanges_[idx].endLine = i - 1;
+                                    this.caseLabelRanges_[idx].endCol = ocase;
+                                    this.caseLabelRanges_[idx].scope = 0;
+                                    this.caseLabelRanges_[idx].dist =
+                                        this.caseLabelRanges_[idx].endLine - this.caseLabelRanges_[idx].startLine;
+                                    this.caseLabelRanges_[idx].type = EntityType.Switch;
+                                    this.ncaseLabelRanges_++;
+                                }
+                            }
+
+                            caseLabelStack.push(new CharInfo(i, ocase));
+                            log('case push [' + i + ']')
+                        }
+                    }
+                }
+
                 // Push open bracket
                 let obracket = this.getIndicesOf('{', line);
                 if (obracket.length > 0) {
                     funcBracketSet = true;
                     for (let j = 0; j < obracket.length; j++) {
-                        log('func push { [' + i + ']')
-                        funcStack.push(new CharInfo(i, obracket[j]));
+                        let funcFlag = 0;
+                        if (funcSwitchSet) {
+                            funcSwitchSet = false;
+                            funcFlag = EntityType.Switch;
+                            log('switch push { [' + i + ']')
+                        }
+                        else {
+                            log('func push { [' + i + ']')
+                        }
+                        funcStack.push(new CharInfo(i, obracket[j], funcFlag));
                     }
                 }
-
-                /* // Handle brackets within function
-                if (funcBracketSet && this.withinFunctionEnable)
-                {
-
-                } */
 
                 // Pop close bracket
                 let cbracket = this.getIndicesOf('}', line);
@@ -568,6 +624,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                         if (funcStack.length > 0) {
                             log('func pop  } [' + i + ']')
                             let pop = funcStack.pop() || new CharInfo(0, 0);
+
                             // Check whether it has the same idention
                             if ((cbracket[j] === funcCandidate.column)
                                 || (funcIsCtor
@@ -595,7 +652,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                                 funcStack = new Array<CharInfo>();
                             }
                             // Handle brackets within function
-                            else if (this.withinFunctionEnable
+                            else if ((this.withinFunctionEnable || this.caseLabelEnable)
                                 && this.nwithinFuncRanges_ < this.maxElements_
                                 && cbracket[j] !== -1
                                 && cbracket[j] >= funcCandidate.column
@@ -604,18 +661,46 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                                 && i - pop.line >= this.withinFunctionMinLines
                                 && !this.inStringBlock(pop.line, pop.column, pop.column + 1)
                                 && !this.inStringBlock(i, cbracket[j], cbracket[j] + 1)) {
-                                log('within func add [' + pop.line + '-' + i + ']');
-                                // Add range
-                                const idx = this.nwithinFuncRanges_;
-                                this.withinFuncRanges_[idx].startLine = pop.line;
-                                this.withinFuncRanges_[idx].startCol = pop.column;
-                                this.withinFuncRanges_[idx].endLine = i;
-                                this.withinFuncRanges_[idx].endCol = cbracket[j];
-                                this.withinFuncRanges_[idx].scope = 0;
-                                this.withinFuncRanges_[idx].dist =
-                                    this.withinFuncRanges_[idx].endLine - this.withinFuncRanges_[idx].startLine;
-                                this.withinFuncRanges_[idx].type = EntityType.WithinFunction;
-                                this.nwithinFuncRanges_++;
+
+                                if (this.withinFunctionEnable) {
+                                    log('within func add [' + pop.line + '-' + i + ']');
+                                    // Add range
+                                    const idx = this.nwithinFuncRanges_;
+                                    this.withinFuncRanges_[idx].startLine = pop.line;
+                                    this.withinFuncRanges_[idx].startCol = pop.column;
+                                    this.withinFuncRanges_[idx].endLine = i;
+                                    this.withinFuncRanges_[idx].endCol = cbracket[j];
+                                    this.withinFuncRanges_[idx].scope = 0;
+                                    this.withinFuncRanges_[idx].dist =
+                                        this.withinFuncRanges_[idx].endLine - this.withinFuncRanges_[idx].startLine;
+                                    this.withinFuncRanges_[idx].type = EntityType.WithinFunction;
+                                    this.nwithinFuncRanges_++;
+                                }
+                                // this.caseLabelEnable
+                                else
+                                {
+                                    // Check if it is the last case label in the switch
+                                    if (caseLabelStack.length > 0 && pop.flag === EntityType.Switch) {
+                                        log('last case pop [' + i + ']')
+
+                                        //caseLabelStack.pop();
+                                        let casePop = caseLabelStack.pop() || new CharInfo(0, 0);
+                                        if (i - casePop.line > this.caseLabelMinLines) {
+                                            log('last case add [' + casePop.line + '-' + i + ']');
+                                            // Add range
+                                            const idx = this.ncaseLabelRanges_;
+                                            this.caseLabelRanges_[idx].startLine = casePop.line;
+                                            this.caseLabelRanges_[idx].startCol = casePop.column;
+                                            this.caseLabelRanges_[idx].endLine = i - 1;
+                                            this.caseLabelRanges_[idx].endCol = cbracket[j];
+                                            this.caseLabelRanges_[idx].scope = 0;
+                                            this.caseLabelRanges_[idx].dist =
+                                                this.caseLabelRanges_[idx].endLine - this.caseLabelRanges_[idx].startLine;
+                                            this.caseLabelRanges_[idx].type = EntityType.Switch;
+                                            this.ncaseLabelRanges_++;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -645,7 +730,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                             break;
                         }
                     }
-                    if (objects.length > 0 && !inString // chc > 1
+                    if (objects.length > 0 && !inString
                         // This shouldn't happen anyway
                         && objIdx !== -1 && objColumn !== -1) {
                         // Check whether it is a macro function call
@@ -812,8 +897,15 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             foldingRanges.push(
                 new FoldingRange(this.withinFuncRanges_[i].startLine, this.withinFuncRanges_[i].endLine));
         }
-
-
+        // This may conflict with each other
+        // todo in the future we may check whether ranges intersect 
+        // with each other but keep the performance in mind
+        if (!this.withinFunctionEnable) {
+            for (let i = 0; i < this.ncaseLabelRanges_; i++) {
+                foldingRanges.push(
+                    new FoldingRange(this.caseLabelRanges_[i].startLine, this.caseLabelRanges_[i].endLine));
+            }
+        }
 
 
         var t1 = performance.now();
@@ -896,6 +988,13 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                 lines.push(this.withinFuncRanges_[i].startLine);
             }
         }
+        for (let i = 0; i < this.ncaseLabelRanges_; i++) {
+            if (!(cursorPos.line >= this.caseLabelRanges_[i].startLine && cursorPos.line <= this.caseLabelRanges_[i].endLine)) {
+                //log('foldAroundCursor->caseLabelRanges_: [L' + this.caseLabelRanges_[i].startLine + "] [TYPE:"
+                //    + EntityType[this.caseLabelRanges_[i].type] + "]");
+                lines.push(this.caseLabelRanges_[i].startLine);
+            }
+        }
 
         if (lines.length > 1)
             await vscode.commands.executeCommand("editor.fold", { levels: 1, direction: 'up', selectionLines: lines });
@@ -913,6 +1012,9 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         for (let i = 0; i < this.nwithinFuncRanges_; i++) {
             lines.push(this.withinFuncRanges_[i].startLine);
         }
+        for (let i = 0; i < this.ncaseLabelRanges_; i++) {
+            lines.push(this.caseLabelRanges_[i].startLine);
+        }
 
         if (lines.length > 1)
             await vscode.commands.executeCommand("editor.fold", { levels: 1, direction: 'up', selectionLines: lines });
@@ -929,6 +1031,9 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
         }
         for (let i = 0; i < this.nwithinFuncRanges_; i++) {
             lines.push(this.withinFuncRanges_[i].startLine);
+        }
+        for (let i = 0; i < this.ncaseLabelRanges_; i++) {
+            lines.push(this.caseLabelRanges_[i].startLine);
         }
         for (let i = 0; i < this.nranges_; i++) {
             if ((this.namespaceEnable && this.ranges_[i].type === EntityType.Namespace)
