@@ -1,28 +1,28 @@
 import * as vscode from 'vscode'
 
 export let g_logChannel: vscode.OutputChannel;
-export let g_enableLog = false;
+export let logEnable = false;
 
 function getLogChannel() {
     if (g_logChannel === undefined) {
         g_logChannel = vscode.window.createOutputChannel('cfold');
-        if (g_enableLog)
+        if (logEnable)
             g_logChannel.show();
     }
     return g_logChannel;
 }
 
 export function toggleLog() {
-    g_enableLog = !g_enableLog;
+    logEnable = !logEnable;
 }
 
 export function logError(error: any) {
-    if (g_enableLog)
+    if (logEnable)
         getLogChannel().appendLine(`[${getTimeAndms()}][Error] ${error.toString()}`.replace(/(\r\n|\n|\r)/gm, ''));
 }
 
 export function log(message: string) {
-    if (g_enableLog)
+    if (logEnable)
         getLogChannel().appendLine(`[${getTimeAndms()}][Info] ${message}`);
 }
 
