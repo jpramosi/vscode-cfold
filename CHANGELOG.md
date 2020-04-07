@@ -1,3 +1,6 @@
+## 0.2.2
+- add case label fold controls
+
 ## 0.2.1
 - update packages
 
