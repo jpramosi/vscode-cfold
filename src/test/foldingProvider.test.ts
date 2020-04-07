@@ -7,11 +7,50 @@ import * as fse from 'fs-extra';
 import * as vscode from 'vscode';
 import { FoldingRange } from 'vscode'
 import FoldingProvider from '../foldingProvider'
+import { globalConfig, updateConfig } from '../globalConfig';
+
+/// Set default option for the folding provider.
+async function setDefaultOptions()
+{
+    await globalConfig.update('class.enable', true);
+    await globalConfig.update('commentQuote.enable', true);
+    //globalConfig.update('commentSlash.enable', true);
+    await globalConfig.update('documentationQuote.enable', true);
+    //globalConfig.update('documentationSlash.enable', true);
+    await globalConfig.update('enum.enable', true);
+    await globalConfig.update('function.enable', true);
+    await globalConfig.update('namespace.enable', true);
+    await globalConfig.update('preprocessor.enable', true);
+    await globalConfig.update('preprocessor.ignoreGuard', true);
+    await globalConfig.update('preprocessor.minLines', 0);
+    await globalConfig.update('preprocessor.recursiveDepth', 1);
+    await globalConfig.update('struct.enable', true);
+    await globalConfig.update('withinFunction.enable', true);
+    await globalConfig.update('withinFunction.minLines', 0);
+    await globalConfig.update('caseLabel.enable', true);
+    await globalConfig.update('caseLabel.minLines', 0);
+    updateConfig();
+}
+
+/// Handle specific files and set the options accordingly.
+async function handleFileOptions(file :string)
+{
+    switch (file) {
+        case "switch.cpp": {
+            await globalConfig.update('withinFunction.enable', false);
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    updateConfig();
+}
 
 describe(path.basename(__filename), function () {
     // Initialize provider
     let provider = new FoldingProvider(true);
-    (<any>provider).updateConfig();
+    updateConfig();
 
     // Get paths
     const extensionDevelopmentPath = path.join(__dirname, '../../');
@@ -21,12 +60,21 @@ describe(path.basename(__filename), function () {
     it('Dump test files', async function () {
         let files = glob.sync('**/**', { cwd: test_files });
         let dumped = 0;
+
+        await setDefaultOptions();
+        (<any>provider).updateConfig();
+
         for (let i = 0; i < files.length; i++) {
             let fullFilePath = path.join(test_files, files[i]);
             let doc = await vscode.workspace.openTextDocument(fullFilePath);
             const maxLines = 10000;
             let buffer = new Array<string>(maxLines);
             let nbuffer = 0;
+
+            // Set options
+            await setDefaultOptions();
+            await handleFileOptions(files[i]);
+            (<any>provider).updateConfig();
 
             // Get ranges & check it
             assert.strictEqual(doc.lineCount < maxLines, true);
