@@ -28,12 +28,20 @@ void aaa()
             t = a;
         }
         case 4:
+        {
             t = a;
+        }
         case 5:
+            if (a == 0) {
+              //
+              //
+            }
             t = a;
             t = a;
         case 6:
-
+            {
+                //
+            }
             t = a;
             t = a;
             switch (a)
@@ -54,6 +62,11 @@ void aaa()
                             t = a;
                         case 2:
                         case 3:
+                            if (a == 0) 
+                            {
+                                //
+                                //
+                            }
                             t = a;
                             t = a;
                         case 4:

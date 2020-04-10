@@ -109,121 +109,121 @@ StringRef getSourceInRange(const SourceManager &sm, const LangOptions &langOpts,
 
 Kind getKind(const Decl *d, SymbolKind &kind) { @_10_
   switch (d->getKind()) { @_11_
-  case Decl::LinkageSpec:
-    return Kind::Invalid;
+  case Decl::LinkageSpec: @_12_
+    return Kind::Invalid; @_12_
   case Decl::Namespace:
-  case Decl::NamespaceAlias:
+  case Decl::NamespaceAlias: @_13_
     kind = SymbolKind::Namespace;
-    return Kind::Type;
+    return Kind::Type; @_13_
   case Decl::ObjCCategory:
   case Decl::ObjCCategoryImpl:
   case Decl::ObjCImplementation:
   case Decl::ObjCInterface:
-  case Decl::ObjCProtocol:
+  case Decl::ObjCProtocol: @_14_
     kind = SymbolKind::Interface;
-    return Kind::Type;
-  case Decl::ObjCMethod:
+    return Kind::Type; @_14_
+  case Decl::ObjCMethod: @_15_
     kind = SymbolKind::Method;
-    return Kind::Func;
-  case Decl::ObjCProperty:
+    return Kind::Func; @_15_
+  case Decl::ObjCProperty: @_16_
     kind = SymbolKind::Property;
-    return Kind::Type;
-  case Decl::ClassTemplate:
+    return Kind::Type; @_16_
+  case Decl::ClassTemplate: @_17_
     kind = SymbolKind::Class;
-    return Kind::Type;
-  case Decl::FunctionTemplate:
+    return Kind::Type; @_17_
+  case Decl::FunctionTemplate: @_18_
     kind = SymbolKind::Function;
-    return Kind::Func;
-  case Decl::TypeAliasTemplate:
+    return Kind::Func; @_18_
+  case Decl::TypeAliasTemplate: @_19_
     kind = SymbolKind::TypeAlias;
-    return Kind::Type;
-  case Decl::VarTemplate:
+    return Kind::Type; @_19_
+  case Decl::VarTemplate: @_20_
     kind = SymbolKind::Variable;
-    return Kind::Var;
-  case Decl::TemplateTemplateParm:
+    return Kind::Var; @_20_
+  case Decl::TemplateTemplateParm: @_21_
     kind = SymbolKind::TypeParameter;
-    return Kind::Type;
-  case Decl::Enum:
+    return Kind::Type; @_21_
+  case Decl::Enum: @_22_
     kind = SymbolKind::Enum;
-    return Kind::Type;
+    return Kind::Type; @_22_
   case Decl::CXXRecord:
-  case Decl::Record:
+  case Decl::Record: @_23_
     kind = SymbolKind::Class;
     // spec has no Union, use Class
     if (auto *rd = dyn_cast<RecordDecl>(d))
       if (rd->getTagKind() == TTK_Struct)
         kind = SymbolKind::Struct;
-    return Kind::Type;
+    return Kind::Type; @_23_
   case Decl::ClassTemplateSpecialization:
-  case Decl::ClassTemplatePartialSpecialization:
+  case Decl::ClassTemplatePartialSpecialization: @_24_
     kind = SymbolKind::Class;
-    return Kind::Type;
-  case Decl::TemplateTypeParm:
+    return Kind::Type; @_24_
+  case Decl::TemplateTypeParm: @_25_
     kind = SymbolKind::TypeParameter;
-    return Kind::Type;
+    return Kind::Type; @_25_
   case Decl::TypeAlias:
   case Decl::Typedef:
-  case Decl::UnresolvedUsingTypename:
+  case Decl::UnresolvedUsingTypename: @_26_
     kind = SymbolKind::TypeAlias;
-    return Kind::Type;
-  case Decl::Using:
+    return Kind::Type; @_26_
+  case Decl::Using: @_27_
     kind = SymbolKind::Null; // ignored
-    return Kind::Invalid;
-  case Decl::Binding:
+    return Kind::Invalid; @_27_
+  case Decl::Binding: @_28_
     kind = SymbolKind::Variable;
-    return Kind::Var;
+    return Kind::Var; @_28_
   case Decl::Field:
-  case Decl::ObjCIvar:
+  case Decl::ObjCIvar: @_29_
     kind = SymbolKind::Field;
-    return Kind::Var;
-  case Decl::Function:
+    return Kind::Var; @_29_
+  case Decl::Function: @_30_
     kind = SymbolKind::Function;
-    return Kind::Func;
-  case Decl::CXXMethod: { @_12_
+    return Kind::Func; @_30_
+  case Decl::CXXMethod: { @_31_ @_32_
     const auto *md = cast<CXXMethodDecl>(d);
     kind = md->isStatic() ? SymbolKind::StaticMethod : SymbolKind::Method;
     return Kind::Func;
-  } @_12_
-  case Decl::CXXConstructor:
+  } @_31_ @_32_
+  case Decl::CXXConstructor: @_33_
     kind = SymbolKind::Constructor;
-    return Kind::Func;
+    return Kind::Func; @_33_
   case Decl::CXXConversion:
-  case Decl::CXXDestructor:
+  case Decl::CXXDestructor: @_34_
     kind = SymbolKind::Method;
-    return Kind::Func;
-  case Decl::NonTypeTemplateParm:
+    return Kind::Func; @_34_
+  case Decl::NonTypeTemplateParm: @_35_
     // ccls extension
     kind = SymbolKind::Parameter;
-    return Kind::Var;
+    return Kind::Var; @_35_
   case Decl::Var:
-  case Decl::Decomposition:
+  case Decl::Decomposition: @_36_
     kind = SymbolKind::Variable;
-    return Kind::Var;
+    return Kind::Var; @_36_
   case Decl::ImplicitParam:
-  case Decl::ParmVar:
+  case Decl::ParmVar: @_37_
     // ccls extension
     kind = SymbolKind::Parameter;
-    return Kind::Var;
+    return Kind::Var; @_37_
   case Decl::VarTemplateSpecialization:
-  case Decl::VarTemplatePartialSpecialization:
+  case Decl::VarTemplatePartialSpecialization: @_38_
     kind = SymbolKind::Variable;
-    return Kind::Var;
-  case Decl::EnumConstant:
+    return Kind::Var; @_38_
+  case Decl::EnumConstant: @_39_
     kind = SymbolKind::EnumMember;
-    return Kind::Var;
-  case Decl::UnresolvedUsingValue:
+    return Kind::Var; @_39_
+  case Decl::UnresolvedUsingValue: @_40_
     kind = SymbolKind::Variable;
-    return Kind::Var;
-  case Decl::TranslationUnit:
+    return Kind::Var; @_40_
+  case Decl::TranslationUnit: @_41_
     return Kind::Invalid;
 
   default:
-    return Kind::Invalid;
+    return Kind::Invalid; @_41_
   } @_11_
 } @_10_
 
-LanguageId getDeclLanguage(const Decl *d) { @_13_
-  switch (d->getKind()) { @_14_
+LanguageId getDeclLanguage(const Decl *d) { @_42_
+  switch (d->getKind()) { @_43_
   default:
     return LanguageId::C;
   case Decl::ImplicitParam:
@@ -238,8 +238,8 @@ LanguageId getDeclLanguage(const Decl *d) { @_13_
   case Decl::ObjCProperty:
   case Decl::ObjCPropertyImpl:
   case Decl::ObjCProtocol:
-  case Decl::ObjCTypeParam:
-    return LanguageId::ObjC;
+  case Decl::ObjCTypeParam: @_44_
+    return LanguageId::ObjC; @_44_
   case Decl::CXXConstructor:
   case Decl::CXXConversion:
   case Decl::CXXDestructor:
@@ -262,15 +262,15 @@ LanguageId getDeclLanguage(const Decl *d) { @_13_
   case Decl::UnresolvedUsingValue:
   case Decl::Using:
   case Decl::UsingDirective:
-  case Decl::UsingShadow:
-    return LanguageId::Cpp;
-  } @_14_
-} @_13_
+  case Decl::UsingShadow: @_45_
+    return LanguageId::Cpp; @_45_
+  } @_43_
+} @_42_
 
 // clang/lib/AST/DeclPrinter.cpp
-QualType getBaseType(QualType t, bool deduce_auto) { @_15_
+QualType getBaseType(QualType t, bool deduce_auto) { @_46_
   QualType baseType = t;
-  while (!baseType.isNull() && !baseType->isSpecifierType()) { @_16_
+  while (!baseType.isNull() && !baseType->isSpecifierType()) { @_47_
     if (const PointerType *pTy = baseType->getAs<PointerType>())
       baseType = pTy->getPointeeType();
     else if (const BlockPointerType *bPy = baseType->getAs<BlockPointerType>())
@@ -283,18 +283,18 @@ QualType getBaseType(QualType t, bool deduce_auto) { @_15_
       baseType = rTy->getPointeeType();
     else if (const ParenType *pTy = baseType->getAs<ParenType>())
       baseType = pTy->desugar();
-    else if (deduce_auto) { @_17_
+    else if (deduce_auto) { @_48_
       if (const AutoType *aTy = baseType->getAs<AutoType>())
         baseType = aTy->getDeducedType();
       else
         break;
-    } else @_17_
+    } else @_48_
       break;
-  } @_16_
+  } @_47_
   return baseType;
-} @_15_
+} @_46_
 
-const Decl *getTypeDecl(QualType t, bool *specialization = nullptr) { @_18_
+const Decl *getTypeDecl(QualType t, bool *specialization = nullptr) { @_49_
   Decl *d = nullptr;
   t = getBaseType(t.getUnqualifiedType(), true);
   const Type *tp = t.getTypePtrOrNull();
@@ -302,24 +302,24 @@ const Decl *getTypeDecl(QualType t, bool *specialization = nullptr) { @_18_
     return nullptr;
 
 try_again:
-  switch (tp->getTypeClass()) { @_19_
-  case Type::Typedef:
+  switch (tp->getTypeClass()) { @_50_
+  case Type::Typedef: @_51_
     d = cast<TypedefType>(tp)->getDecl();
-    break;
-  case Type::ObjCObject:
+    break; @_51_
+  case Type::ObjCObject: @_52_
     d = cast<ObjCObjectType>(tp)->getInterface();
-    break;
-  case Type::ObjCInterface:
+    break; @_52_
+  case Type::ObjCInterface: @_53_
     d = cast<ObjCInterfaceType>(tp)->getDecl();
-    break;
+    break; @_53_
   case Type::Record:
-  case Type::Enum:
+  case Type::Enum: @_54_
     d = cast<TagType>(tp)->getDecl();
-    break;
-  case Type::TemplateTypeParm:
+    break; @_54_
+  case Type::TemplateTypeParm: @_55_
     d = cast<TemplateTypeParmType>(tp)->getDecl();
-    break;
-  case Type::TemplateSpecialization:
+    break; @_55_
+  case Type::TemplateSpecialization: @_56_
     if (specialization)
       *specialization = true;
     if (const RecordType *record = tp->getAs<RecordType>())
@@ -329,35 +329,35 @@ try_again:
               ->getTemplateName()
               .getAsTemplateDecl();
     break;
-
+ @_56_
   case Type::Auto:
-  case Type::DeducedTemplateSpecialization:
+  case Type::DeducedTemplateSpecialization: @_57_
     tp = cast<DeducedType>(tp)->getDeducedType().getTypePtrOrNull();
     if (tp)
       goto try_again;
     break;
-
-  case Type::InjectedClassName:
+ @_57_
+  case Type::InjectedClassName: @_58_
     d = cast<InjectedClassNameType>(tp)->getDecl();
     break;
 
     // FIXME: Template type parameters!
-
-  case Type::Elaborated:
+ @_58_
+  case Type::Elaborated: @_59_
     tp = cast<ElaboratedType>(tp)->getNamedType().getTypePtrOrNull();
     goto try_again;
 
   default:
-    break;
-  } @_19_
+    break; @_59_
+  } @_50_
   return d;
-} @_18_
+} @_49_
 
-const Decl *getAdjustedDecl(const Decl *d) { @_20_
-  while (d) { @_21_
-    if (auto *r = dyn_cast<CXXRecordDecl>(d)) { @_22_
-      if (auto *s = dyn_cast<ClassTemplateSpecializationDecl>(r)) { @_23_
-        if (!s->isExplicitSpecialization()) { @_24_
+const Decl *getAdjustedDecl(const Decl *d) { @_60_
+  while (d) { @_61_
+    if (auto *r = dyn_cast<CXXRecordDecl>(d)) { @_62_
+      if (auto *s = dyn_cast<ClassTemplateSpecializationDecl>(r)) { @_63_
+        if (!s->isExplicitSpecialization()) { @_64_
           llvm::PointerUnion<ClassTemplateDecl *,
                              ClassTemplatePartialSpecializationDecl *>
               result = s->getSpecializedTemplateOrPartial();
@@ -366,24 +366,24 @@ const Decl *getAdjustedDecl(const Decl *d) { @_20_
           else
             d = result.get<ClassTemplatePartialSpecializationDecl *>();
           continue;
-        } @_24_
+        } @_64_
       } else if (auto *d1 = r->getInstantiatedFromMemberClass()) {
         d = d1;
         continue;
-      } @_23_
+      } @_63_
     } else if (auto *ed = dyn_cast<EnumDecl>(d)) {
-      if (auto *d1 = ed->getInstantiatedFromMemberEnum()) { @_25_
+      if (auto *d1 = ed->getInstantiatedFromMemberEnum()) { @_65_
         d = d1;
         continue;
-      } @_25_
-    } @_22_
+      } @_65_
+    } @_62_
     break;
-  } @_21_
+  } @_61_
   return d;
-} @_20_
+} @_60_
 
-bool validateRecord(const RecordDecl *rd) { @_26_
-  for (const auto *i : rd->fields()) { @_27_
+bool validateRecord(const RecordDecl *rd) { @_66_
+  for (const auto *i : rd->fields()) { @_67_
     QualType fqt = i->getType();
     if (fqt->isIncompleteType() || fqt->isDependentType())
       return false;
@@ -391,16 +391,16 @@ bool validateRecord(const RecordDecl *rd) { @_26_
       if (const RecordDecl *child = childType->getDecl())
         if (!validateRecord(child))
           return false;
-  } @_27_
+  } @_67_
   return true;
-} @_26_
+} @_66_
 
-class IndexDataConsumer : public index::IndexDataConsumer { @_28_
+class IndexDataConsumer : public index::IndexDataConsumer { @_68_
 public:
   ASTContext *ctx;
   IndexParam &param;
 
-  std::string getComment(const Decl *d) { @_29_
+  std::string getComment(const Decl *d) { @_69_
     SourceManager &sm = ctx->getSourceManager();
     const RawComment *rc = ctx->getRawCommentForAnyRedecl(d);
     if (!rc)
@@ -411,7 +411,7 @@ public:
     unsigned start_column = sm.getLineNumber(bInfo.first, bInfo.second);
     std::string ret;
     int pad = -1;
-    for (const char *p = raw.data(), *e = raw.end(); p < e;) { @_30_
+    for (const char *p = raw.data(), *e = raw.end(); p < e;) { @_70_
       // The first line starts with a comment marker, but the rest needs
       // un-indenting.
       unsigned skip = start_column - 1;
@@ -424,7 +424,7 @@ public:
         q++;
       // A minimalist approach to skip Doxygen comment markers.
       // See https://www.stack.nl/~dimitri/doxygen/manual/docblocks.html
-      if (pad < 0) { @_31_
+      if (pad < 0) { @_71_
         // First line, detect the length of comment marker and put into |pad|
         const char *begin = p;
         while (p < e && (*p == '/' || *p == '*' || *p == '-' || *p == '='))
@@ -443,10 +443,10 @@ public:
         while (prefix > 0 && p < e &&
                (*p == ' ' || *p == '/' || *p == '*' || *p == '<' || *p == '!'))
           prefix--, p++;
-      } @_31_
+      } @_71_
       ret.insert(ret.end(), p, q);
       p = q;
-    } @_30_
+    } @_70_
     while (ret.size() && isspace(ret.back()))
       ret.pop_back();
     if (StringRef(ret).endswith("*/") || StringRef(ret).endswith("\n/"))
@@ -454,29 +454,29 @@ public:
     while (ret.size() && isspace(ret.back()))
       ret.pop_back();
     return ret;
-  } @_29_
+  } @_69_
 
-  Usr getUsr(const Decl *d, IndexParam::DeclInfo **info = nullptr) const { @_32_
+  Usr getUsr(const Decl *d, IndexParam::DeclInfo **info = nullptr) const { @_72_
     d = d->getCanonicalDecl();
     auto [it, inserted] = param.decl2Info.try_emplace(d);
-    if (inserted) { @_33_
+    if (inserted) { @_73_
       SmallString<256> usr;
       index::generateUSRForDecl(d, usr);
       auto &info = it->second;
       info.usr = hashUsr(usr);
-      if (auto *nd = dyn_cast<NamedDecl>(d)) { @_34_
+      if (auto *nd = dyn_cast<NamedDecl>(d)) { @_74_
         info.short_name = nd->getNameAsString();
         llvm::raw_string_ostream os(info.qualified);
         nd->printQualifiedName(os, getDefaultPolicy());
         simplifyAnonymous(info.qualified);
-      } @_34_
-    } @_33_
+      } @_74_
+    } @_73_
     if (info)
       *info = &it->second;
     return it->second.usr;
-  } @_32_
+  } @_72_
 
-  PrintingPolicy getDefaultPolicy() const { @_35_
+  PrintingPolicy getDefaultPolicy() const { @_75_
     PrintingPolicy pp(ctx->getLangOpts());
     pp.AnonymousTagLocations = false;
     pp.TerseOutput = true;
@@ -487,10 +487,10 @@ public:
     pp.SuppressInitializers = true;
     pp.FullyQualifiedName = false;
     return pp;
-  } @_35_
+  } @_75_
 
-  static void simplifyAnonymous(std::string &name) { @_36_
-    for (std::string::size_type i = 0;;) { @_37_
+  static void simplifyAnonymous(std::string &name) { @_76_
+    for (std::string::size_type i = 0;;) { @_77_
       if ((i = name.find("(anonymous ", i)) == std::string::npos)
         break;
       i++;
@@ -498,12 +498,12 @@ public:
         name.replace(i, 19, "anon ns");
       else
         name.replace(i, 9, "anon");
-    } @_37_
-  } @_36_
+    } @_77_
+  } @_76_
 
   template <typename Def>
   void setName(const Decl *d, std::string_view short_name,
-               std::string_view qualified, Def &def) { @_38_
+               std::string_view qualified, Def &def) { @_78_
     SmallString<256> str;
     llvm::raw_svector_ostream os(str);
     d->print(os, getDefaultPolicy());
@@ -511,18 +511,18 @@ public:
     std::string name(str.data(), str.size());
     simplifyAnonymous(name);
     // Remove \n in DeclPrinter.cpp "{\n" + if(!TerseOutput)something + "}"
-    for (std::string::size_type i = 0;;) { @_39_
+    for (std::string::size_type i = 0;;) { @_79_
       if ((i = name.find("{\n}", i)) == std::string::npos)
         break;
       name.replace(i, 3, "{}");
-    } @_39_
+    } @_79_
     auto i = name.find(short_name);
     if (short_name.size())
       while (i != std::string::npos &&
              ((i && isIdentifierBody(name[i - 1])) ||
               isIdentifierBody(name[i + short_name.size()])))
         i = name.find(short_name, i + short_name.size());
-    if (i == std::string::npos) { @_40_
+    if (i == std::string::npos) { @_80_
       // e.g. operator type-parameter-1
       i = 0;
       def.short_name_offset = 0;
@@ -532,10 +532,10 @@ public:
     } else {
       name.replace(i, short_name.size(), qualified);
       def.short_name_offset = i + qualified.size() - short_name.size();
-    } @_40_
+    } @_80_
     // name may be empty while short_name is not.
     def.short_name_size = name.empty() ? 0 : short_name.size();
-    for (int paren = 0; i; i--) { @_41_
+    for (int paren = 0; i; i--) { @_81_
       // Skip parentheses in "(anon struct)::name"
       if (name[i - 1] == ')')
         paren++;
@@ -544,17 +544,17 @@ public:
       else if (!(paren > 0 || isIdentifierBody(name[i - 1]) ||
                  name[i - 1] == ':'))
         break;
-    } @_41_
+    } @_81_
     def.qual_name_offset = i;
     def.detailed_name = intern(name);
-  } @_38_
+  } @_78_
 
   void setVarName(const Decl *d, std::string_view short_name,
-                  std::string_view qualified, IndexVar::Def &def) { @_42_
+                  std::string_view qualified, IndexVar::Def &def) { @_82_
     QualType t;
     const Expr *init = nullptr;
     bool deduced = false;
-    if (auto *vd = dyn_cast<VarDecl>(d)) { @_43_
+    if (auto *vd = dyn_cast<VarDecl>(d)) { @_83_
       t = vd->getType();
       init = vd->getAnyInitializer();
       def.storage = vd->getStorageClass();
@@ -564,20 +564,20 @@ public:
     } else if (auto *bd = dyn_cast<BindingDecl>(d)) {
       t = bd->getType();
       deduced = true;
-    } @_43_
-    if (!t.isNull()) { @_44_
-      if (t->getContainedDeducedType()) { @_45_
+    } @_83_
+    if (!t.isNull()) { @_84_
+      if (t->getContainedDeducedType()) { @_85_
         deduced = true;
       } else if (auto *dt = dyn_cast<DecltypeType>(t)) {
         // decltype(y) x;
-        while (dt && !dt->getUnderlyingType().isNull()) { @_46_
+        while (dt && !dt->getUnderlyingType().isNull()) { @_86_
           t = dt->getUnderlyingType();
           dt = dyn_cast<DecltypeType>(t);
-        } @_46_
+        } @_86_
         deduced = true;
-      } @_45_
-    } @_44_
-    if (!t.isNull() && deduced) { @_47_
+      } @_85_
+    } @_84_
+    if (!t.isNull() && deduced) { @_87_
       SmallString<256> str;
       llvm::raw_svector_ostream os(str);
       PrintingPolicy pp = getDefaultPolicy();
@@ -592,8 +592,8 @@ public:
       def.detailed_name = intern(str);
     } else {
       setName(d, short_name, qualified, def);
-    } @_47_
-    if (init) { @_48_
+    } @_87_
+    if (init) { @_88_
       SourceManager &sm = ctx->getSourceManager();
       const LangOptions &lang = ctx->getLangOpts();
       SourceRange sr =
@@ -611,86 +611,86 @@ public:
           def.storage == SC_Static && strncmp(def.detailed_name, "static ", 7)
               ? intern(("static " + t).str())
               : intern(t.str());
-    } @_48_
-  } @_42_
+    } @_88_
+  } @_82_
 
-  static int getFileLID(IndexFile *db, SourceManager &sm, FileID fid) { @_49_
+  static int getFileLID(IndexFile *db, SourceManager &sm, FileID fid) { @_89_
     auto [it, inserted] = db->uid2lid_and_path.try_emplace(fid);
-    if (inserted) { @_50_
+    if (inserted) { @_90_
       const FileEntry *fe = sm.getFileEntryForID(fid);
-      if (!fe) { @_51_
+      if (!fe) { @_91_
         it->second.first = -1;
         return -1;
-      } @_51_
+      } @_91_
       it->second.first = db->uid2lid_and_path.size() - 1;
       it->second.second = pathFromFileEntry(*fe);
-    } @_50_
+    } @_90_
     return it->second.first;
-  } @_49_
+  } @_89_
 
   void addMacroUse(IndexFile *db, SourceManager &sm, Usr usr, Kind kind,
-                   SourceLocation sl) const { @_52_
+                   SourceLocation sl) const { @_92_
     FileID fid = sm.getFileID(sl);
     int lid = getFileLID(db, sm, fid);
     if (lid < 0)
       return;
     Range spell = fromTokenRange(sm, ctx->getLangOpts(), SourceRange(sl, sl));
     Use use{{spell, Role::Dynamic}, lid};
-    switch (kind) { @_53_
-    case Kind::Func:
+    switch (kind) { @_93_
+    case Kind::Func: @_94_
       db->toFunc(usr).uses.push_back(use);
-      break;
-    case Kind::Type:
+      break; @_94_
+    case Kind::Type: @_95_
       db->toType(usr).uses.push_back(use);
-      break;
-    case Kind::Var:
+      break; @_95_
+    case Kind::Var: @_96_
       db->toVar(usr).uses.push_back(use);
       break;
     default:
-      llvm_unreachable("");
-    } @_53_
-  } @_52_
+      llvm_unreachable(""); @_96_
+    } @_93_
+  } @_92_
 
-  void collectRecordMembers(IndexType &type, const RecordDecl *rd) { @_54_
+  void collectRecordMembers(IndexType &type, const RecordDecl *rd) { @_97_
     SmallVector<std::pair<const RecordDecl *, int>, 2> stack{{rd, 0}};
     llvm::DenseSet<const RecordDecl *> seen;
     seen.insert(rd);
-    while (stack.size()) { @_55_
+    while (stack.size()) { @_98_
       int offset;
       std::tie(rd, offset) = stack.back();
       stack.pop_back();
       if (!rd->isCompleteDefinition() || rd->isDependentType() ||
           rd->isInvalidDecl() || !validateRecord(rd))
         offset = -1;
-      for (FieldDecl *fd : rd->fields()) { @_56_
+      for (FieldDecl *fd : rd->fields()) { @_99_
         int offset1 = offset < 0 ? -1 : int(offset + ctx->getFieldOffset(fd));
         if (fd->getIdentifier())
           type.def.vars.emplace_back(getUsr(fd), offset1);
-        else if (const auto *rt1 = fd->getType()->getAs<RecordType>()) { @_57_
+        else if (const auto *rt1 = fd->getType()->getAs<RecordType>()) { @_100_
           if (const RecordDecl *rd1 = rt1->getDecl())
             if (seen.insert(rd1).second)
               stack.push_back({rd1, offset1});
-        } @_57_
-      } @_56_
-    } @_55_
-  } @_54_
+        } @_100_
+      } @_99_
+    } @_98_
+  } @_97_
 
 public:
   IndexDataConsumer(IndexParam &param) : param(param) {}
   void initialize(ASTContext &ctx) override { this->ctx = param.ctx = &ctx; }
-#if LLVM_VERSION_MAJOR < 10 // llvmorg-10-init-12036-g3b9715cb219 @_58_
+#if LLVM_VERSION_MAJOR < 10 // llvmorg-10-init-12036-g3b9715cb219 @_101_
 # define handleDeclOccurrence handleDeclOccurence
-#endif @_58_
+#endif @_101_
   bool handleDeclOccurrence(const Decl *d, index::SymbolRoleSet roles,
                             ArrayRef<index::SymbolRelation> relations,
                             SourceLocation src_loc,
-                            ASTNodeInfo ast_node) override { @_59_
-    if (!param.no_linkage) { @_60_
+                            ASTNodeInfo ast_node) override { @_102_
+    if (!param.no_linkage) { @_103_
       if (auto *nd = dyn_cast<NamedDecl>(d); nd && nd->hasLinkage())
         ;
       else
         return true;
-    } @_60_
+    } @_103_
     SourceManager &sm = ctx->getSourceManager();
     const LangOptions &lang = ctx->getLangOpts();
     FileID fid;
@@ -705,7 +705,7 @@ public:
       return true;
     int lid = -1;
     IndexFile *db;
-    if (g_config->index.multiVersion && param.useMultiVersion(fid)) { @_61_
+    if (g_config->index.multiVersion && param.useMultiVersion(fid)) { @_104_
       db = param.consumeFile(sm.getMainFileID());
       if (!db)
         return true;
@@ -716,13 +716,13 @@ public:
       db = param.consumeFile(fid);
       if (!db)
         return true;
-    } @_61_
+    } @_104_
 
     // spell, extent, comments use OrigD while most others use adjusted |D|.
     const Decl *origD = ast_node.OrigD;
     const DeclContext *sem_dc = origD->getDeclContext()->getRedeclContext();
     const DeclContext *lex_dc = ast_node.ContainerDC->getRedeclContext();
-    { @_62_
+    { @_105_
       const NamespaceDecl *nd;
       while ((nd = dyn_cast<NamespaceDecl>(cast<Decl>(sem_dc))) &&
              nd->isAnonymousNamespace())
@@ -730,7 +730,7 @@ public:
       while ((nd = dyn_cast<NamespaceDecl>(cast<Decl>(lex_dc))) &&
              nd->isAnonymousNamespace())
         lex_dc = nd->getDeclContext()->getRedeclContext();
-    } @_62_
+    } @_105_
     Role role = static_cast<Role>(roles);
     db->language = LanguageId((int)db->language | (int)getDeclLanguage(d));
 
@@ -745,37 +745,37 @@ public:
     Kind kind = getKind(d, ls_kind);
 
     if (is_def)
-      switch (d->getKind()) { @_63_
+      switch (d->getKind()) { @_106_
       case Decl::CXXConversion: // *operator* int => *operator int*
       case Decl::CXXDestructor: // *~*A => *~A*
       case Decl::CXXMethod:     // *operator*= => *operator=*
-      case Decl::Function:      // operator delete
-        if (src_loc.isFileID()) { @_64_
+      case Decl::Function:      // operator delete @_107_
+        if (src_loc.isFileID()) { @_108_
           SourceRange sr =
               cast<FunctionDecl>(origD)->getNameInfo().getSourceRange();
           if (sr.getEnd().isFileID())
             loc = fromTokenRange(sm, lang, sr);
-        } @_64_
+        } @_108_
         break;
       default:
-        break;
-      } @_63_
-    else { @_65_
+        break; @_107_
+      } @_106_
+    else { @_109_
       // e.g. typedef Foo<int> gg; => Foo has an unadjusted `D`
       const Decl *d1 = getAdjustedDecl(d);
       if (d1 && d1 != d)
         d = d1;
-    } @_65_
+    } @_109_
 
     IndexParam::DeclInfo *info;
     Usr usr = getUsr(d, &info);
 
-    auto do_def_decl = [&](auto *entity) { @_66_
+    auto do_def_decl = [&](auto *entity) { @_110_
       Use use{{loc, role}, lid};
-      if (is_def) { @_67_
+      if (is_def) { @_111_
         SourceRange sr = origD->getSourceRange();
-        entity->def.spell = {use, @_68_
-                             fromTokenRangeDefaulted(sm, lang, sr, fid, loc)}; @_68_
+        entity->def.spell = {use, @_112_
+                             fromTokenRangeDefaulted(sm, lang, sr, fid, loc)}; @_112_
         entity->def.parent_kind = SymbolKind::File;
         getKind(cast<Decl>(sem_dc), entity->def.parent_kind);
       } else if (is_decl) {
@@ -785,20 +785,20 @@ public:
       } else {
         entity->uses.push_back(use);
         return;
-      } @_67_
+      } @_111_
       if (entity->def.comments[0] == '\0' && g_config->index.comments)
         entity->def.comments = intern(getComment(origD));
-    }; @_66_
-    switch (kind) { @_69_
-    case Kind::Invalid:
+    }; @_110_
+    switch (kind) { @_113_
+    case Kind::Invalid: @_114_
       if (ls_kind == SymbolKind::Unknown)
         LOG_S(INFO) << "Unhandled " << int(d->getKind()) << " "
                     << info->qualified << " in " << db->path << ":"
                     << (loc.start.line + 1) << ":" << (loc.start.column + 1);
-      return true;
-    case Kind::File:
-      return true;
-    case Kind::Func:
+      return true; @_114_
+    case Kind::File: @_115_
+      return true; @_115_
+    case Kind::Func: @_116_
       func = &db->toFunc(usr);
       func->def.kind = ls_kind;
       // Mark as Role::Implicit to span one more column to the left/right.
@@ -811,7 +811,7 @@ public:
         addMacroUse(db, sm, usr, Kind::Func, spell);
       if (func->def.detailed_name[0] == '\0')
         setName(d, info->short_name, info->qualified, func->def);
-      if (is_def || is_decl) { @_70_
+      if (is_def || is_decl) { @_117_
         const Decl *dc = cast<Decl>(sem_dc);
         if (getKind(dc, ls_kind) == Kind::Type)
           db->toType(getUsr(dc)).def.funcs.push_back(usr);
@@ -820,29 +820,29 @@ public:
         if (getKind(dc, ls_kind) == Kind::Func)
           db->toFunc(getUsr(dc))
               .def.callees.push_back({loc, usr, Kind::Func, role});
-      } @_70_
-      break;
-    case Kind::Type:
+      } @_117_
+      break; @_116_
+    case Kind::Type: @_118_
       type = &db->toType(usr);
       type->def.kind = ls_kind;
       do_def_decl(type);
       if (spell != src_loc)
         addMacroUse(db, sm, usr, Kind::Type, spell);
       if ((is_def || type->def.detailed_name[0] == '\0') &&
-          info->short_name.size()) { @_71_
+          info->short_name.size()) { @_119_
         if (d->getKind() == Decl::TemplateTypeParm)
           type->def.detailed_name = intern(info->short_name);
         else
           // OrigD may be detailed, e.g. "struct D : B {}"
           setName(origD, info->short_name, info->qualified, type->def);
-      } @_71_
-      if (is_def || is_decl) { @_72_
+      } @_119_
+      if (is_def || is_decl) { @_120_
         const Decl *dc = cast<Decl>(sem_dc);
         if (getKind(dc, ls_kind) == Kind::Type)
           db->toType(getUsr(dc)).def.types.push_back(usr);
-      } @_72_
-      break;
-    case Kind::Var:
+      } @_120_
+      break; @_118_
+    case Kind::Var: @_121_
       var = &db->toVar(usr);
       var->def.kind = ls_kind;
       do_def_decl(var);
@@ -853,34 +853,34 @@ public:
       QualType t;
       if (auto *vd = dyn_cast<ValueDecl>(d))
         t = vd->getType();
-      if (is_def || is_decl) { @_73_
+      if (is_def || is_decl) { @_122_
         const Decl *dc = cast<Decl>(sem_dc);
         Kind kind = getKind(dc, var->def.parent_kind);
         if (kind == Kind::Func)
           db->toFunc(getUsr(dc)).def.vars.push_back(usr);
         else if (kind == Kind::Type && !isa<RecordDecl>(sem_dc))
           db->toType(getUsr(dc)).def.vars.emplace_back(usr, -1);
-        if (!t.isNull()) { @_74_
-          if (auto *bt = t->getAs<BuiltinType>()) { @_75_
+        if (!t.isNull()) { @_123_
+          if (auto *bt = t->getAs<BuiltinType>()) { @_124_
             Usr usr1 = static_cast<Usr>(bt->getKind());
             var->def.type = usr1;
             if (!isa<EnumConstantDecl>(d))
               db->toType(usr1).instances.push_back(usr);
           } else if (const Decl *d1 = getAdjustedDecl(getTypeDecl(t))) {
-#if LLVM_VERSION_MAJOR < 9 @_76_
-            if (isa<TemplateTypeParmDecl>(d1)) { @_77_
+#if LLVM_VERSION_MAJOR < 9 @_125_
+            if (isa<TemplateTypeParmDecl>(d1)) { @_126_
               // e.g. TemplateTypeParmDecl is not handled by
               // handleDeclOccurence.
               SourceRange sr1 = d1->getSourceRange();
-              if (sm.getFileID(sr1.getBegin()) == fid) { @_78_
+              if (sm.getFileID(sr1.getBegin()) == fid) { @_127_
                 IndexParam::DeclInfo *info1;
                 Usr usr1 = getUsr(d1, &info1);
                 IndexType &type1 = db->toType(usr1);
                 SourceLocation sl1 = d1->getLocation();
-                type1.def.spell = { @_79_
-                    Use{{fromTokenRange(sm, lang, {sl1, sl1}), Role::Definition}, @_80_
-                        lid}, @_80_
-                    fromTokenRange(sm, lang, sr1)}; @_79_
+                type1.def.spell = { @_128_
+                    Use{{fromTokenRange(sm, lang, {sl1, sl1}), Role::Definition}, @_129_
+                        lid}, @_129_
+                    fromTokenRange(sm, lang, sr1)}; @_128_
                 type1.def.detailed_name = intern(info1->short_name);
                 type1.def.short_name_size = int16_t(info1->short_name.size());
                 type1.def.kind = SymbolKind::TypeParameter;
@@ -888,87 +888,87 @@ public:
                 var->def.type = usr1;
                 type1.instances.push_back(usr);
                 break;
-              } @_78_
-            } @_77_
-#endif @_76_
+              } @_127_
+            } @_126_
+#endif @_125_
 
             IndexParam::DeclInfo *info1;
             Usr usr1 = getUsr(d1, &info1);
             var->def.type = usr1;
             if (!isa<EnumConstantDecl>(d))
               db->toType(usr1).instances.push_back(usr);
-          } @_75_
-        } @_74_
+          } @_124_
+        } @_123_
       } else if (!var->def.spell && var->declarations.empty()) {
         // e.g. lambda parameter
         SourceLocation l = d->getLocation();
-        if (sm.getFileID(l) == fid) { @_81_
-          var->def.spell = { @_82_
+        if (sm.getFileID(l) == fid) { @_130_
+          var->def.spell = { @_131_
               Use{{fromTokenRange(sm, lang, {l, l}), Role::Definition}, lid},
-              fromTokenRange(sm, lang, d->getSourceRange())}; @_82_
+              fromTokenRange(sm, lang, d->getSourceRange())}; @_131_
           var->def.parent_kind = SymbolKind::Method;
-        } @_81_
-      } @_73_
-      break;
-    } @_69_
+        } @_130_
+      } @_122_
+      break; @_121_
+    } @_113_
 
-    switch (d->getKind()) { @_83_
-    case Decl::Namespace:
-      if (d->isFirstDecl()) { @_84_
+    switch (d->getKind()) { @_132_
+    case Decl::Namespace: @_133_
+      if (d->isFirstDecl()) { @_134_
         auto *nd = cast<NamespaceDecl>(d);
         auto *nd1 = cast<Decl>(nd->getParent());
-        if (isa<NamespaceDecl>(nd1)) { @_85_
+        if (isa<NamespaceDecl>(nd1)) { @_135_
           Usr usr1 = getUsr(nd1);
           type->def.bases.push_back(usr1);
           db->toType(usr1).derived.push_back(usr);
-        } @_85_
-      } @_84_
-      break;
-    case Decl::NamespaceAlias: { @_86_
+        } @_135_
+      } @_134_
+      break; @_133_
+    case Decl::NamespaceAlias: { @_136_ @_137_
       auto *nad = cast<NamespaceAliasDecl>(d);
-      if (const NamespaceDecl *nd = nad->getNamespace()) { @_87_
+      if (const NamespaceDecl *nd = nad->getNamespace()) { @_138_
         Usr usr1 = getUsr(nd);
         type->def.alias_of = usr1;
         (void)db->toType(usr1);
-      } @_87_
+      } @_138_
       break;
-    } @_86_
-    case Decl::CXXRecord:
-      if (is_def) { @_88_
+    } @_136_ @_137_
+    case Decl::CXXRecord: @_139_
+      if (is_def) { @_140_
         auto *rd = dyn_cast<CXXRecordDecl>(d);
         if (rd && rd->hasDefinition())
           for (const CXXBaseSpecifier &base : rd->bases())
             if (const Decl *baseD =
-                    getAdjustedDecl(getTypeDecl(base.getType()))) { @_89_
+                    getAdjustedDecl(getTypeDecl(base.getType()))) { @_141_
               Usr usr1 = getUsr(baseD);
               type->def.bases.push_back(usr1);
               db->toType(usr1).derived.push_back(usr);
-            } @_89_
-      } @_88_
-      [[fallthrough]];
+            } @_141_
+      } @_140_
+      [[fallthrough]]; @_139_
     case Decl::Enum:
-    case Decl::Record:
-      if (auto *tag_d = dyn_cast<TagDecl>(d)) { @_90_
-        if (type->def.detailed_name[0] == '\0' && info->short_name.empty()) { @_91_
+    case Decl::Record: @_142_
+      if (auto *tag_d = dyn_cast<TagDecl>(d)) { @_143_
+        if (type->def.detailed_name[0] == '\0' && info->short_name.empty()) { @_144_
           StringRef tag;
-          switch (tag_d->getTagKind()) { @_92_
-          case TTK_Struct:
+          switch (tag_d->getTagKind()) { @_145_
+          case TTK_Struct: @_146_
             tag = "struct";
-            break;
-          case TTK_Interface:
+            break; @_146_
+          case TTK_Interface: @_147_
             tag = "__interface";
-            break;
-          case TTK_Union:
+            break; @_147_
+          case TTK_Union: @_148_
             tag = "union";
-            break;
-          case TTK_Class:
+            break; @_148_
+          case TTK_Class: @_149_
             tag = "class";
-            break;
-          case TTK_Enum:
+            break; @_149_
+          case TTK_Enum: @_150_
             tag = "enum";
-            break;
-          } @_92_
-          if (TypedefNameDecl *td = tag_d->getTypedefNameForAnonDecl()) { @_93_
+            break; @_150_
+          } @_145_
+          if (TypedefNameDecl *td = tag_d->getTypedefNameForAnonDecl()) { @_151_
             StringRef name = td->getName();
             std::string detailed = ("anon " + tag + " " + name).str();
             type->def.detailed_name = intern(detailed);
@@ -977,24 +977,24 @@ public:
             std::string name = ("anon " + tag).str();
             type->def.detailed_name = intern(name);
             type->def.short_name_size = name.size();
-          } @_93_
-        } @_91_
+          } @_151_
+        } @_144_
         if (is_def && !isa<EnumDecl>(d))
           if (auto *ord = dyn_cast<RecordDecl>(origD))
             collectRecordMembers(*type, ord);
-      } @_90_
-      break;
+      } @_143_
+      break; @_142_
     case Decl::ClassTemplateSpecialization:
-    case Decl::ClassTemplatePartialSpecialization:
+    case Decl::ClassTemplatePartialSpecialization: @_152_
       type->def.kind = SymbolKind::Class;
-      if (is_def) { @_94_
+      if (is_def) { @_153_
         if (auto *ord = dyn_cast<RecordDecl>(origD))
           collectRecordMembers(*type, ord);
-        if (auto *rd = dyn_cast<CXXRecordDecl>(d)) { @_95_
+        if (auto *rd = dyn_cast<CXXRecordDecl>(d)) { @_154_
           Decl *d1 = nullptr;
           if (auto *sd = dyn_cast<ClassTemplatePartialSpecializationDecl>(rd))
             d1 = sd->getSpecializedTemplate();
-          else if (auto *sd = dyn_cast<ClassTemplateSpecializationDecl>(rd)) { @_96_
+          else if (auto *sd = dyn_cast<ClassTemplateSpecializationDecl>(rd)) { @_155_
             llvm::PointerUnion<ClassTemplateDecl *,
                                ClassTemplatePartialSpecializationDecl *>
                 result = sd->getSpecializedTemplateOrPartial();
@@ -1003,108 +1003,108 @@ public:
             else
               d1 = result.get<ClassTemplatePartialSpecializationDecl *>();
 
-          } else @_96_
+          } else @_155_
             d1 = rd->getInstantiatedFromMemberClass();
-          if (d1) { @_97_
+          if (d1) { @_156_
             Usr usr1 = getUsr(d1);
             type->def.bases.push_back(usr1);
             db->toType(usr1).derived.push_back(usr);
-          } @_97_
-        } @_95_
-      } @_94_
-      break;
+          } @_156_
+        } @_154_
+      } @_153_
+      break; @_152_
     case Decl::TypeAlias:
     case Decl::Typedef:
-    case Decl::UnresolvedUsingTypename:
-      if (auto *td = dyn_cast<TypedefNameDecl>(d)) { @_98_
+    case Decl::UnresolvedUsingTypename: @_157_
+      if (auto *td = dyn_cast<TypedefNameDecl>(d)) { @_158_
         bool specialization = false;
         QualType t = td->getUnderlyingType();
-        if (const Decl *d1 = getAdjustedDecl(getTypeDecl(t, &specialization))) { @_99_
+        if (const Decl *d1 = getAdjustedDecl(getTypeDecl(t, &specialization))) { @_159_
           Usr usr1 = getUsr(d1);
           IndexType &type1 = db->toType(usr1);
           type->def.alias_of = usr1;
           // Not visited template<class T> struct B {typedef A<T> t;};
-          if (specialization) { @_100_
+          if (specialization) { @_160_
             const TypeSourceInfo *tsi = td->getTypeSourceInfo();
             SourceLocation l1 = tsi->getTypeLoc().getBeginLoc();
             if (sm.getFileID(l1) == fid)
               type1.uses.push_back(
                   {{fromTokenRange(sm, lang, {l1, l1}), Role::Reference}, lid});
-          } @_100_
-        } @_99_
-      } @_98_
-      break;
-    case Decl::CXXMethod:
-      if (is_def || is_decl) { @_101_
-        if (auto *nd = dyn_cast<NamedDecl>(d)) { @_102_
+          } @_160_
+        } @_159_
+      } @_158_
+      break; @_157_
+    case Decl::CXXMethod: @_161_
+      if (is_def || is_decl) { @_162_
+        if (auto *nd = dyn_cast<NamedDecl>(d)) { @_163_
           SmallVector<const NamedDecl *, 8> overDecls;
           ctx->getOverriddenMethods(nd, overDecls);
-          for (const auto *nd1 : overDecls) { @_103_
+          for (const auto *nd1 : overDecls) { @_164_
             Usr usr1 = getUsr(nd1);
             func->def.bases.push_back(usr1);
             db->toFunc(usr1).derived.push_back(usr);
-          } @_103_
-        } @_102_
-      } @_101_
-      break;
-    case Decl::EnumConstant:
-      if (is_def && strchr(var->def.detailed_name, '=') == nullptr) { @_104_
+          } @_164_
+        } @_163_
+      } @_162_
+      break; @_161_
+    case Decl::EnumConstant: @_165_
+      if (is_def && strchr(var->def.detailed_name, '=') == nullptr) { @_166_
         auto *ecd = cast<EnumConstantDecl>(d);
         const auto &val = ecd->getInitVal();
         std::string init =
             " = " + (val.isSigned() ? std::to_string(val.getSExtValue())
                                     : std::to_string(val.getZExtValue()));
         var->def.hover = intern(var->def.detailed_name + init);
-      } @_104_
+      } @_166_
       break;
     default:
-      break;
-    } @_83_
+      break; @_165_
+    } @_132_
     return true;
-  } @_59_
-}; @_28_
+  } @_102_
+}; @_68_
 
-class IndexPPCallbacks : public PPCallbacks { @_105_
+class IndexPPCallbacks : public PPCallbacks { @_167_
   SourceManager &sm;
   IndexParam &param;
 
-  std::pair<StringRef, Usr> getMacro(const Token &tok) const { @_106_
+  std::pair<StringRef, Usr> getMacro(const Token &tok) const { @_168_
     StringRef name = tok.getIdentifierInfo()->getName();
     SmallString<256> usr("@macro@");
     usr += name;
     return {name, hashUsr(usr)};
-  } @_106_
+  } @_168_
 
 public:
   IndexPPCallbacks(SourceManager &sm, IndexParam &param)
       : sm(sm), param(param) {}
   void FileChanged(SourceLocation sl, FileChangeReason reason,
-                   SrcMgr::CharacteristicKind, FileID) override { @_107_
+                   SrcMgr::CharacteristicKind, FileID) override { @_169_
     if (reason == FileChangeReason::EnterFile)
       (void)param.consumeFile(sm.getFileID(sl));
-  } @_107_
+  } @_169_
   void InclusionDirective(SourceLocation hashLoc, const Token &tok,
                           StringRef included, bool isAngled,
                           CharSourceRange filenameRange, const FileEntry *file,
                           StringRef searchPath, StringRef relativePath,
                           const Module *imported,
-                          SrcMgr::CharacteristicKind fileType) override { @_108_
+                          SrcMgr::CharacteristicKind fileType) override { @_170_
     if (!file)
       return;
     auto spell = fromCharSourceRange(sm, param.ctx->getLangOpts(),
                                      filenameRange, nullptr);
     FileID fid = sm.getFileID(filenameRange.getBegin());
-    if (IndexFile *db = param.consumeFile(fid)) { @_109_
+    if (IndexFile *db = param.consumeFile(fid)) { @_171_
       std::string path = pathFromFileEntry(*file);
       if (path.size())
         db->includes.push_back({spell.start.line, intern(path)});
-    } @_109_
-  } @_108_
-  void MacroDefined(const Token &tok, const MacroDirective *md) override { @_110_
+    } @_171_
+  } @_170_
+  void MacroDefined(const Token &tok, const MacroDirective *md) override { @_172_
     const LangOptions &lang = param.ctx->getLangOpts();
     SourceLocation sl = md->getLocation();
     FileID fid = sm.getFileID(sl);
-    if (IndexFile *db = param.consumeFile(fid)) { @_111_
+    if (IndexFile *db = param.consumeFile(fid)) { @_173_
       auto [name, usr] = getMacro(tok);
       IndexVar &var = db->toVar(usr);
       Range range = fromTokenRange(sm, lang, {sl, sl}, nullptr);
@@ -1116,7 +1116,7 @@ public:
       SourceRange sr(mi->getDefinitionLoc(), mi->getDefinitionEndLoc());
       Range extent = fromTokenRange(sm, param.ctx->getLangOpts(), sr);
       var.def.spell = {Use{{range, Role::Definition}}, extent};
-      if (var.def.detailed_name[0] == '\0') { @_112_
+      if (var.def.detailed_name[0] == '\0') { @_174_
         var.def.detailed_name = intern(name);
         var.def.short_name_size = name.size();
         StringRef buf = getSourceInRange(sm, lang, sr);
@@ -1124,38 +1124,38 @@ public:
             intern(buf.count('\n') <= g_config->index.maxInitializerLines - 1
                        ? Twine("#define ", getSourceInRange(sm, lang, sr)).str()
                        : Twine("#define ", name).str());
-      } @_112_
-    } @_111_
-  } @_110_
+      } @_174_
+    } @_173_
+  } @_172_
   void MacroExpands(const Token &tok, const MacroDefinition &, SourceRange sr,
-                    const MacroArgs *) override { @_113_
+                    const MacroArgs *) override { @_175_
     SourceLocation sl = sm.getSpellingLoc(sr.getBegin());
     FileID fid = sm.getFileID(sl);
-    if (IndexFile *db = param.consumeFile(fid)) { @_114_
+    if (IndexFile *db = param.consumeFile(fid)) { @_176_
       IndexVar &var = db->toVar(getMacro(tok).second);
       var.uses.push_back(
-          {{fromTokenRange(sm, param.ctx->getLangOpts(), {sl, sl}, nullptr), @_115_ @_116_
-            Role::Dynamic}}); @_115_ @_116_
-    } @_114_
-  } @_113_
+          {{fromTokenRange(sm, param.ctx->getLangOpts(), {sl, sl}, nullptr), @_177_ @_178_
+            Role::Dynamic}}); @_177_ @_178_
+    } @_176_
+  } @_175_
   void MacroUndefined(const Token &tok, const MacroDefinition &md,
-                      const MacroDirective *ud) override { @_117_
-    if (ud) { @_118_
+                      const MacroDirective *ud) override { @_179_
+    if (ud) { @_180_
       SourceLocation sl = ud->getLocation();
       MacroExpands(tok, md, {sl, sl}, nullptr);
-    } @_118_
-  } @_117_
-  void SourceRangeSkipped(SourceRange sr, SourceLocation) override { @_119_
+    } @_180_
+  } @_179_
+  void SourceRangeSkipped(SourceRange sr, SourceLocation) override { @_181_
     Range range = fromCharSourceRange(sm, param.ctx->getLangOpts(),
                                       CharSourceRange::getCharRange(sr));
     FileID fid = sm.getFileID(sr.getBegin());
     if (fid.isValid())
       if (IndexFile *db = param.consumeFile(fid))
         db->skipped_ranges.push_back(range);
-  } @_119_
-}; @_105_
+  } @_181_
+}; @_167_
 
-class IndexFrontendAction : public ASTFrontendAction { @_120_
+class IndexFrontendAction : public ASTFrontendAction { @_182_
   std::shared_ptr<IndexDataConsumer> dataConsumer;
   const index::IndexingOptions &indexOpts;
   IndexParam &param;
@@ -1167,34 +1167,34 @@ public:
       : dataConsumer(std::move(dataConsumer)), indexOpts(indexOpts),
         param(param) {}
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &ci,
-                                                 StringRef inFile) override { @_121_
-    class SkipProcessed : public ASTConsumer { @_122_
+                                                 StringRef inFile) override { @_183_
+    class SkipProcessed : public ASTConsumer { @_184_
       IndexParam &param;
       const ASTContext *ctx = nullptr;
 
     public:
       SkipProcessed(IndexParam &param) : param(param) {}
       void Initialize(ASTContext &ctx) override { this->ctx = &ctx; }
-      bool shouldSkipFunctionBody(Decl *d) override { @_123_
+      bool shouldSkipFunctionBody(Decl *d) override { @_185_
         const SourceManager &sm = ctx->getSourceManager();
         FileID fid = sm.getFileID(sm.getExpansionLoc(d->getLocation()));
         return !(g_config->index.multiVersion && param.useMultiVersion(fid)) &&
                !param.consumeFile(fid);
-      } @_123_
-    }; @_122_
+      } @_185_
+    }; @_184_
 
     std::shared_ptr<Preprocessor> pp = ci.getPreprocessorPtr();
     pp->addPPCallbacks(
         std::make_unique<IndexPPCallbacks>(pp->getSourceManager(), param));
     std::vector<std::unique_ptr<ASTConsumer>> consumers;
     consumers.push_back(std::make_unique<SkipProcessed>(param));
-#if LLVM_VERSION_MAJOR >= 10 // rC370337 @_124_
+#if LLVM_VERSION_MAJOR >= 10 // rC370337 @_186_
     consumers.push_back(index::createIndexingASTConsumer(
         dataConsumer, indexOpts, std::move(pp)));
-#endif @_124_
+#endif @_186_
     return std::make_unique<MultiplexConsumer>(std::move(consumers));
-  } @_121_
-}; @_120_
+  } @_183_
+}; @_182_
 } // namespace @_1_
 
 const int IndexFile::kMajorVersion = 21;
@@ -1204,52 +1204,52 @@ IndexFile::IndexFile(const std::string &path, const std::string &contents,
                      bool no_linkage)
     : path(path), no_linkage(no_linkage), file_contents(contents) {}
 
-IndexFunc &IndexFile::toFunc(Usr usr) { @_125_
+IndexFunc &IndexFile::toFunc(Usr usr) { @_187_
   auto [it, inserted] = usr2func.try_emplace(usr);
   if (inserted)
     it->second.usr = usr;
   return it->second;
-} @_125_
+} @_187_
 
-IndexType &IndexFile::toType(Usr usr) { @_126_
+IndexType &IndexFile::toType(Usr usr) { @_188_
   auto [it, inserted] = usr2type.try_emplace(usr);
   if (inserted)
     it->second.usr = usr;
   return it->second;
-} @_126_
+} @_188_
 
-IndexVar &IndexFile::toVar(Usr usr) { @_127_
+IndexVar &IndexFile::toVar(Usr usr) { @_189_
   auto [it, inserted] = usr2var.try_emplace(usr);
   if (inserted)
     it->second.usr = usr;
   return it->second;
-} @_127_
+} @_189_
 
-std::string IndexFile::toString() { @_128_
+std::string IndexFile::toString() { @_190_
   return ccls::serialize(SerializeFormat::Json, *this);
-} @_128_
+} @_190_
 
-template <typename T> void uniquify(std::vector<T> &a) { @_129_
+template <typename T> void uniquify(std::vector<T> &a) { @_191_
   std::unordered_set<T> seen;
   size_t n = 0;
   for (size_t i = 0; i < a.size(); i++)
     if (seen.insert(a[i]).second)
       a[n++] = a[i];
   a.resize(n);
-} @_129_
+} @_191_
 
-namespace idx { @_130_
-void init() { @_131_
+namespace idx { @_192_
+void init() { @_193_
   multiVersionMatcher = new GroupMatch(g_config->index.multiVersionWhitelist,
                                        g_config->index.multiVersionBlacklist);
-} @_131_
+} @_193_
 
 std::vector<std::unique_ptr<IndexFile>>
 index(SemaManager *manager, WorkingFiles *wfiles, VFS *vfs,
       const std::string &opt_wdir, const std::string &main,
       const std::vector<const char *> &args,
       const std::vector<std::pair<std::string, std::string>> &remapped,
-      bool no_linkage, bool &ok) { @_132_
+      bool no_linkage, bool &ok) { @_194_
   ok = true;
   auto pch = std::make_shared<PCHContainerOperations>();
   llvm::IntrusiveRefCntPtr<llvm::vfs::FileSystem> fs =
@@ -1268,10 +1268,10 @@ index(SemaManager *manager, WorkingFiles *wfiles, VFS *vfs,
   std::string buf = wfiles->getContent(main);
   std::vector<std::unique_ptr<llvm::MemoryBuffer>> bufs;
   if (buf.size())
-    for (auto &[filename, content] : remapped) { @_133_
+    for (auto &[filename, content] : remapped) { @_195_
       bufs.push_back(llvm::MemoryBuffer::getMemBuffer(content));
       ci->getPreprocessorOpts().addRemappedFile(filename, bufs.back().get());
-    } @_133_
+    } @_195_
 
   DiagnosticConsumer dc;
   auto clang = std::make_unique<CompilerInstance>(pch);
@@ -1283,12 +1283,12 @@ index(SemaManager *manager, WorkingFiles *wfiles, VFS *vfs,
   if (!clang->hasTarget())
     return {};
   clang->getPreprocessorOpts().RetainRemappedFileBuffers = true;
-#if LLVM_VERSION_MAJOR >= 9 // rC357037 @_134_
-  clang->createFileManager(fs); @_134_
-#else @_135_
+#if LLVM_VERSION_MAJOR >= 9 // rC357037 @_196_
+  clang->createFileManager(fs); @_196_
+#else @_197_
   clang->setVirtualFileSystem(fs);
   clang->createFileManager();
-#endif @_135_
+#endif @_197_
   clang->setSourceManager(new SourceManager(clang->getDiagnostics(),
                                             clang->getFileManager(), true));
 
@@ -1297,58 +1297,58 @@ index(SemaManager *manager, WorkingFiles *wfiles, VFS *vfs,
   index::IndexingOptions indexOpts;
   indexOpts.SystemSymbolFilter =
       index::IndexingOptions::SystemSymbolFilterKind::All;
-  if (no_linkage) { @_136_
+  if (no_linkage) { @_198_
     indexOpts.IndexFunctionLocals = true;
     indexOpts.IndexImplicitInstantiation = true;
-#if LLVM_VERSION_MAJOR >= 9 @_137_
+#if LLVM_VERSION_MAJOR >= 9 @_199_
 
     indexOpts.IndexParametersInDeclarations =
         g_config->index.parametersInDeclarations;
     indexOpts.IndexTemplateParameters = true;
-#endif @_137_
-  } @_136_
+#endif @_199_
+  } @_198_
 
-#if LLVM_VERSION_MAJOR >= 10 // rC370337 @_138_
+#if LLVM_VERSION_MAJOR >= 10 // rC370337 @_200_
   auto action = std::make_unique<IndexFrontendAction>(
-      std::make_shared<IndexDataConsumer>(param), indexOpts, param); @_138_
-#else @_139_
+      std::make_shared<IndexDataConsumer>(param), indexOpts, param); @_200_
+#else @_201_
   auto dataConsumer = std::make_shared<IndexDataConsumer>(param);
   auto action = createIndexingAction(
       dataConsumer, indexOpts,
       std::make_unique<IndexFrontendAction>(dataConsumer, indexOpts, param));
-#endif @_139_
+#endif @_201_
 
   std::string reason;
-  { @_140_
+  { @_202_
     llvm::CrashRecoveryContext crc;
-    auto parse = [&]() { @_141_
+    auto parse = [&]() { @_203_
       if (!action->BeginSourceFile(*clang, clang->getFrontendOpts().Inputs[0]))
         return;
-#if LLVM_VERSION_MAJOR >= 9 // rL364464 @_142_
-      if (llvm::Error e = action->Execute()) { @_143_
+#if LLVM_VERSION_MAJOR >= 9 // rL364464 @_204_
+      if (llvm::Error e = action->Execute()) { @_205_
         reason = llvm::toString(std::move(e));
         return;
-      } @_142_ @_143_
-#else @_144_
+      } @_204_ @_205_
+#else @_206_
       if (!action->Execute())
         return;
-#endif @_144_
+#endif @_206_
       action->EndSourceFile();
       ok = true;
-    }; @_141_
-    if (!crc.RunSafely(parse)) { @_145_
+    }; @_203_
+    if (!crc.RunSafely(parse)) { @_207_
       LOG_S(ERROR) << "clang crashed for " << main;
       return {};
-    } @_145_
-  } @_140_
-  if (!ok) { @_146_
+    } @_207_
+  } @_202_
+  if (!ok) { @_208_
     LOG_S(ERROR) << "failed to index " << main
                  << (reason.empty() ? "" : ": " + reason);
     return {};
-  } @_146_
+  } @_208_
 
   std::vector<std::unique_ptr<IndexFile>> result;
-  for (auto &it : param.uid2file) { @_147_
+  for (auto &it : param.uid2file) { @_209_
     if (!it.second.db)
       continue;
     std::unique_ptr<IndexFile> &entry = it.second.db;
@@ -1358,23 +1358,23 @@ index(SemaManager *manager, WorkingFiles *wfiles, VFS *vfs,
       if (it.first >= 0)
         entry->lid2path.emplace_back(it.first, std::move(it.second));
     entry->uid2lid_and_path.clear();
-    for (auto &it : entry->usr2func) { @_148_
+    for (auto &it : entry->usr2func) { @_210_
       // e.g. declaration + out-of-line definition
       uniquify(it.second.derived);
       uniquify(it.second.uses);
-    } @_148_
-    for (auto &it : entry->usr2type) { @_149_
+    } @_210_
+    for (auto &it : entry->usr2type) { @_211_
       uniquify(it.second.derived);
       uniquify(it.second.uses);
       // e.g. declaration + out-of-line definition
       uniquify(it.second.def.bases);
       uniquify(it.second.def.funcs);
-    } @_149_
+    } @_211_
     for (auto &it : entry->usr2var)
       uniquify(it.second.uses);
 
     // Update dependencies for the file.
-    for (auto &[_, file] : param.uid2file) { @_150_
+    for (auto &[_, file] : param.uid2file) { @_212_
       const std::string &path = file.path;
       if (path.empty())
         continue;
@@ -1383,15 +1383,15 @@ index(SemaManager *manager, WorkingFiles *wfiles, VFS *vfs,
       else if (path != entry->import_file)
         entry->dependencies[llvm::CachedHashStringRef(intern(path))] =
             file.mtime;
-    } @_150_
+    } @_212_
     result.push_back(std::move(entry));
-  } @_147_
+  } @_209_
 
   return result;
-} @_132_
-} // namespace idx @_130_
+} @_194_
+} // namespace idx @_192_
 
-void reflect(JsonReader &vis, SymbolRef &v) { @_151_
+void reflect(JsonReader &vis, SymbolRef &v) { @_213_
   std::string t = vis.getString();
   char *s = const_cast<char *>(t.c_str());
   v.range = Range::fromString(s);
@@ -1399,16 +1399,16 @@ void reflect(JsonReader &vis, SymbolRef &v) { @_151_
   v.usr = strtoull(s + 1, &s, 10);
   v.kind = static_cast<Kind>(strtol(s + 1, &s, 10));
   v.role = static_cast<Role>(strtol(s + 1, &s, 10));
-} @_151_
-void reflect(JsonReader &vis, Use &v) { @_152_
+} @_213_
+void reflect(JsonReader &vis, Use &v) { @_214_
   std::string t = vis.getString();
   char *s = const_cast<char *>(t.c_str());
   v.range = Range::fromString(s);
   s = strchr(s, '|');
   v.role = static_cast<Role>(strtol(s + 1, &s, 10));
   v.file_id = static_cast<int>(strtol(s + 1, &s, 10));
-} @_152_
-void reflect(JsonReader &vis, DeclRef &v) { @_153_
+} @_214_
+void reflect(JsonReader &vis, DeclRef &v) { @_215_
   std::string t = vis.getString();
   char *s = const_cast<char *>(t.c_str());
   v.range = Range::fromString(s);
@@ -1417,59 +1417,59 @@ void reflect(JsonReader &vis, DeclRef &v) { @_153_
   s = strchr(s, '|');
   v.role = static_cast<Role>(strtol(s + 1, &s, 10));
   v.file_id = static_cast<int>(strtol(s + 1, &s, 10));
-} @_153_
+} @_215_
 
-void reflect(JsonWriter &vis, SymbolRef &v) { @_154_
+void reflect(JsonWriter &vis, SymbolRef &v) { @_216_
   char buf[99];
   snprintf(buf, sizeof buf, "%s|%" PRIu64 "|%d|%d", v.range.toString().c_str(),
            v.usr, int(v.kind), int(v.role));
   std::string s(buf);
   reflect(vis, s);
-} @_154_
-void reflect(JsonWriter &vis, Use &v) { @_155_
+} @_216_
+void reflect(JsonWriter &vis, Use &v) { @_217_
   char buf[99];
   snprintf(buf, sizeof buf, "%s|%d|%d", v.range.toString().c_str(), int(v.role),
            v.file_id);
   std::string s(buf);
   reflect(vis, s);
-} @_155_
-void reflect(JsonWriter &vis, DeclRef &v) { @_156_
+} @_217_
+void reflect(JsonWriter &vis, DeclRef &v) { @_218_
   char buf[99];
   snprintf(buf, sizeof buf, "%s|%s|%d|%d", v.range.toString().c_str(),
            v.extent.toString().c_str(), int(v.role), v.file_id);
   std::string s(buf);
   reflect(vis, s);
-} @_156_
+} @_218_
 
-void reflect(BinaryReader &vis, SymbolRef &v) { @_157_
+void reflect(BinaryReader &vis, SymbolRef &v) { @_219_
   reflect(vis, v.range);
   reflect(vis, v.usr);
   reflect(vis, v.kind);
   reflect(vis, v.role);
-} @_157_
-void reflect(BinaryReader &vis, Use &v) { @_158_
+} @_219_
+void reflect(BinaryReader &vis, Use &v) { @_220_
   reflect(vis, v.range);
   reflect(vis, v.role);
   reflect(vis, v.file_id);
-} @_158_
-void reflect(BinaryReader &vis, DeclRef &v) { @_159_
+} @_220_
+void reflect(BinaryReader &vis, DeclRef &v) { @_221_
   reflect(vis, static_cast<Use &>(v));
   reflect(vis, v.extent);
-} @_159_
+} @_221_
 
-void reflect(BinaryWriter &vis, SymbolRef &v) { @_160_
+void reflect(BinaryWriter &vis, SymbolRef &v) { @_222_
   reflect(vis, v.range);
   reflect(vis, v.usr);
   reflect(vis, v.kind);
   reflect(vis, v.role);
-} @_160_
-void reflect(BinaryWriter &vis, Use &v) { @_161_
+} @_222_
+void reflect(BinaryWriter &vis, Use &v) { @_223_
   reflect(vis, v.range);
   reflect(vis, v.role);
   reflect(vis, v.file_id);
-} @_161_
-void reflect(BinaryWriter &vis, DeclRef &v) { @_162_
+} @_223_
+void reflect(BinaryWriter &vis, DeclRef &v) { @_224_
   reflect(vis, static_cast<Use &>(v));
   reflect(vis, v.extent);
-} @_162_
+} @_224_
 } // namespace ccls @_0_
