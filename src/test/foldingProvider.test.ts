@@ -10,8 +10,7 @@ import FoldingProvider from '../foldingProvider'
 import { globalConfig, updateConfig } from '../globalConfig';
 
 /// Set default option for the folding provider.
-async function setDefaultOptions()
-{
+async function setDefaultOptions() {
     await globalConfig.update('class.enable', true);
     await globalConfig.update('commentQuote.enable', true);
     //globalConfig.update('commentSlash.enable', true);
@@ -33,11 +32,10 @@ async function setDefaultOptions()
 }
 
 /// Handle specific files and set the options accordingly.
-async function handleFileOptions(file :string)
-{
+async function handleFileOptions(file: string) {
     switch (file) {
         case "switch.cpp": {
-            await globalConfig.update('withinFunction.enable', false);
+            //await globalConfig.update('withinFunction.enable', false);
             break;
         }
         default: {

@@ -554,7 +554,7 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                 }
 
                 // Handle switch & case
-                if (funcStack.length > 0) {
+                if (funcStack.length > 0 && this.caseLabelEnable) {
                     // Set switch
                     let switch_search = ' switch ';
                     let oswitch = line.indexOf(switch_search);
@@ -574,7 +574,6 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                                 && caseLabelStack[caseLabelStack.length - 1].column === ocase) {
                                 log('case pop [' + i + ']')
 
-                                //caseLabelStack.pop();
                                 let casePop = caseLabelStack.pop() || new CharInfo(0, 0);
                                 if (i - casePop.line > this.caseLabelMinLines) {
                                     log('case add [' + casePop.line + '-' + i + '] _____' + (i - casePop.line));
@@ -676,14 +675,12 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
                                     this.withinFuncRanges_[idx].type = EntityType.WithinFunction;
                                     this.nwithinFuncRanges_++;
                                 }
-                                // this.caseLabelEnable
-                                else
-                                {
+
+                                if (this.caseLabelEnable) {
                                     // Check if it is the last case label in the switch
                                     if (caseLabelStack.length > 0 && pop.flag === EntityType.Switch) {
                                         log('last case pop [' + i + ']')
 
-                                        //caseLabelStack.pop();
                                         let casePop = caseLabelStack.pop() || new CharInfo(0, 0);
                                         if (i - casePop.line > this.caseLabelMinLines) {
                                             log('last case add [' + casePop.line + '-' + i + ']');
@@ -897,14 +894,10 @@ export default class ConfigurableFoldingProvider implements FoldingRangeProvider
             foldingRanges.push(
                 new FoldingRange(this.withinFuncRanges_[i].startLine, this.withinFuncRanges_[i].endLine));
         }
-        // This may conflict with each other
-        // todo in the future we may check whether ranges intersect 
-        // with each other but keep the performance in mind
-        if (!this.withinFunctionEnable) {
-            for (let i = 0; i < this.ncaseLabelRanges_; i++) {
-                foldingRanges.push(
-                    new FoldingRange(this.caseLabelRanges_[i].startLine, this.caseLabelRanges_[i].endLine));
-            }
+        // Double inserts doesn't seem to affect the folding at all
+        for (let i = 0; i < this.ncaseLabelRanges_; i++) {
+            foldingRanges.push(
+                new FoldingRange(this.caseLabelRanges_[i].startLine, this.caseLabelRanges_[i].endLine));
         }
 
 

@@ -37,6 +37,8 @@ These confiugrations can be set in the common vscode settings menu:
 
 | Config                            | Default   |Description                               |
 |-----------------------------------|-----------|------------------------------------------|
+| cfold.caseLabel.enable            | false     | Enable fold controls for case labels within a switch |
+| cfold.caseLabel.minLines          | 0         | Minimum lines for providing fold controls for case labels within a switch |
 | cfold.class.enable                | false     | Enable fold controls for class |
 | cfold.commentQuote.enable         | true      | Enable fold controls for quoted comment block |
 | cfold.documentationQuote.enable   | true      | Enable fold controls for quoted documentation block |
