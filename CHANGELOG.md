@@ -1,3 +1,7 @@
+## 0.2.3
+- fix case label enable
+- removed limitation on case label fold controls
+
 ## 0.2.2
 - add case label fold controls
 
