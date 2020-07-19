@@ -1,3 +1,6 @@
+## 0.2.4
+- update packages
+
 ## 0.2.3
 - fix case label enable
 - removed limitation on case label fold controls
