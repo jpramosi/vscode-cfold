@@ -1,3 +1,6 @@
+## 0.2.5
+- update packages
+
 ## 0.2.4
 - update packages
 
