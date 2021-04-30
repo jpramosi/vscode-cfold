@@ -18,7 +18,7 @@
     },
     "license": "MIT",
     "engines": {
-        "vscode": "^1.44.0"
+        "vscode": "^1.55.0"
     },
     "categories": [
         "Other"
@@ -179,7 +179,7 @@
         "@types/fs-extra": "^8.1.0",
         "@types/glob": "^7.1.1",
         "@types/mocha": "^7.0.2",
-        "@types/node": "^10.17.59",
+        "@types/node": "^11.15.20",
         "@types/vscode": "^1.55.0",
         "chai": "^4.3.4",
         "fs-extra": "^8.1.0",
