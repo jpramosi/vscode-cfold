@@ -3,6 +3,8 @@ Cfold
 
 ![MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
+*This project is currently not maintained for an indeterminate period. Since the mayor improvements at the "C/C++" extension, it will probably stay archived.*
+
 Cfold is a visual studio code extension that provides advanced folding capabilities with function, class, struct, preprocessor, documentation- & comment blocks particular designed for C & C++ based on the stack principle.
 
 <br>
